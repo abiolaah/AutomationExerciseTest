@@ -1,0 +1,31 @@
+[ {
+  "name" : "1: Get All Products List"
+}, {
+  "name" : "2: POST To All Products List"
+}, {
+  "name" : "3: Get All Brands List"
+}, {
+  "name" : "4: PUT To All Brands List"
+}, {
+  "name" : "5: POST To Search Product"
+}, {
+  "name" : "6: POST To Search Product without search_product parameter"
+}, {
+  "name" : "7: POST To Verify Login with valid details"
+}, {
+  "name" : "8: POST To Verify Login without email parameter"
+}, {
+  "name" : "9: DELETE To Verify Login"
+}, {
+  "name" : "10: POST To Verify Login with invalid details"
+}, {
+  "name" : "11: POST To Create/Register User Account"
+}, {
+  "name" : "12: DELETE METHOD To Delete User Account"
+}, {
+  "name" : "13: PUT METHOD To Update User Account"
+}, {
+  "name" : "14: GET user account detail by email"
+}, {
+  "name" : "Feedback for Us"
+} ]

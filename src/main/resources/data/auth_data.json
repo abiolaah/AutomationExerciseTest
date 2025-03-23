@@ -1,0 +1,115 @@
+[ {
+  "name" : "Amy Andrew",
+  "email" : "andrewamy@gmail.com",
+  "title" : "Mrs",
+  "dob" : {
+    "day" : "09",
+    "month" : "06",
+    "year" : "1994"
+  },
+  "first_name" : "Amy",
+  "last_name" : "Andrew",
+  "company" : "",
+  "address" : "123 Anywhere street, NE",
+  "country" : "Canada",
+  "state" : "Quebec",
+  "city" : "Montreal",
+  "zip_code" : "T5N 0I9",
+  "phone_number" : "7603218970",
+  "password" : "AmyAndrew@1997"
+}, {
+  "country" : "Canada",
+  "address" : "778 Willms Stravenue",
+  "city" : "South Mathewmouth",
+  "last_name" : "Schultz",
+  "title" : "Mrs",
+  "zip_code" : "S9R5Z8",
+  "password" : "wyii98oeh",
+  "dob" : {
+    "day" : "22",
+    "year" : "1980",
+    "month" : "3"
+  },
+  "name" : "Dorian Schultz",
+  "phone_number" : "910-049-1669",
+  "state" : "Ontario",
+  "first_name" : "Dorian",
+  "email" : "jermaine.fritsch@gmail.com"
+}, {
+  "country" : "Canada",
+  "address" : "29165 Cassin Rapid",
+  "city" : "Lake Donnyborough",
+  "last_name" : "Shields",
+  "title" : "Mr",
+  "zip_code" : "B1T2T8",
+  "password" : "t7foq8lhq5m",
+  "dob" : {
+    "month" : "10",
+    "year" : "1980",
+    "day" : "20"
+  },
+  "name" : "Weston Shields",
+  "phone_number" : "729-002-7336",
+  "state" : "New Brunswick",
+  "first_name" : "Weston",
+  "email" : "noemi.spencer@hotmail.com"
+}, {
+  "country" : "Canada",
+  "address" : "247 Stanton Plaza",
+  "city" : "North Malcom",
+  "last_name" : "Conroy",
+  "title" : "Mr",
+  "zip_code" : "Y5E 1P5",
+  "password" : "dz0r0t8o9sn0bj9",
+  "dob" : {
+    "month" : "8",
+    "day" : "5",
+    "year" : "1972"
+  },
+  "name" : "Winter Conroy",
+  "company" : "Auer Inc",
+  "phone_number" : "050-507-0748",
+  "state" : "Quebec",
+  "first_name" : "Winter",
+  "email" : "earl.white@gmail.com"
+}, {
+  "country" : "Canada",
+  "address" : "2713 Amada Hollow",
+  "city" : "Halborough",
+  "last_name" : "Miguelina",
+  "title" : "Mrs",
+  "zip_code" : "V9B 4S8",
+  "password" : "hemv3mfewuv0z",
+  "dob" : {
+    "year" : "1962",
+    "day" : "16",
+    "month" : "3"
+  },
+  "name" : "Dr. Miguelina Ritchie",
+  "company" : "Vandervort-Ortiz",
+  "phone_number" : "(155) 557-7354",
+  "state" : "Northwest Territories",
+  "first_name" : "Dr.",
+  "email" : "charlette.morar@hotmail.com"
+},
+  {
+    "country":"Canada",
+    "address":"062 Dewey Union",
+    "city":"South Robert",
+    "last_name":"Stanley",
+    "title":"Mr",
+    "zip_code":"X0S6A6",
+    "password":"63p9aju8a",
+    "dob":{
+      "year":"1994",
+      "day":"23",
+      "month":"3"
+    },
+    "name":"Miss Stanley Schaden",
+    "phone_number":"526.137.6876",
+    "state":"Newfoundland and Labrador",
+    "first_name":"Miss",
+    "email":"adaline.mcglynn@hotmail.com"
+  }
+
+]

@@ -1,0 +1,55 @@
+[ {
+  "name" : "1: Register User"
+}, {
+  "name" : "2: Login User with correct email and password"
+}, {
+  "name" : "3: Login User with incorrect email and password"
+}, {
+  "name" : "4: Logout User"
+}, {
+  "name" : "5: Register User with existing email"
+}, {
+  "name" : "6: Contact Us Form"
+}, {
+  "name" : "7: Verify s Page"
+}, {
+  "name" : "8: Verify All Products and product detail page"
+}, {
+  "name" : "9: Search Product"
+}, {
+  "name" : "10: Verify Subscription in home page"
+}, {
+  "name" : "11: Verify Subscription in Cart page"
+}, {
+  "name" : "12: Add Products in Cart"
+}, {
+  "name" : "13: Verify Product quantity in Cart"
+}, {
+  "name" : "14: Place Order: Register while Checkout"
+}, {
+  "name" : "15: Place Order: Register before Checkout"
+}, {
+  "name" : "16: Place Order: Login before Checkout"
+}, {
+  "name" : "17: Remove Products From Cart"
+}, {
+  "name" : "18: View Category Products"
+}, {
+  "name" : "19: View & Cart Brand Products"
+}, {
+  "name" : "20: Search Products and Verify Cart After Login"
+}, {
+  "name" : "21: Add review on product"
+}, {
+  "name" : "22: Add to cart from Recommended items"
+}, {
+  "name" : "23: Verify address details in checkout page"
+}, {
+  "name" : "24: Download Invoice after purchase order"
+}, {
+  "name" : "25: Verify Scroll Up using 'Arrow' button and Scroll Down functionality"
+}, {
+  "name" : "26: Verify Scroll Up without 'Arrow' button and Scroll Down functionality"
+}, {
+  "name" : "Feedback for Us"
+} ]
