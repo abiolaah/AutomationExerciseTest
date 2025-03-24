@@ -21,12 +21,15 @@ public class CheckOutPage {
     private final By orderSectionTitleElement = By.xpath("//div[@class='step-one']/h2[text()='Review Your Order']\n");
 
     private final By deliveryNameElement = By.cssSelector("#address_delivery .address_firstname");
-    private final By deliveryAddressElement = By.cssSelector("#address_delivery .address_address1:not(:empty)\n");
+    private final By deliveryCompanyElement = By.cssSelector("#address_delivery .address_address1.address_address2:nth-child(3)");
+    private final By deliveryAddressLineElement = By.cssSelector("#address_delivery .address_address1.address_address2:nth-child(4)");
     private final By deliveryPostalElement = By.cssSelector("#address_delivery .address_postcode\n");
     private final By deliveryCountryElement = By.cssSelector("#address_delivery .address_country_name\n");
     private final By deliveryPhoneElement = By.cssSelector("#address_delivery .address_phone\n");
+
     private final By invoiceNameElement = By.cssSelector("#address_invoice .address_firstname\n");
-    private final By invoiceAddressElement = By.cssSelector("#address_invoice .address_address1:not(:empty)\n");
+    private final By invoiceCompanyElement = By.cssSelector("#address_invoice .address_address1.address_address2:nth-child(3)");
+    private final By invoiceAddressLineElement = By.cssSelector("#address_invoice .address_address1.address_address2:nth-child(4)");
     private final By invoicePostalElement = By.cssSelector("#address_invoice .address_postcode\n");
     private final By invoiceCountryElement = By.cssSelector("#address_invoice .address_country_name\n");
     private final By invoicePhoneElement = By.cssSelector("#address_invoice .address_phone");
@@ -74,9 +77,15 @@ public class CheckOutPage {
         return deliveryName.getText();
     }
 
+    // method to verify delivery company
+    public String getDeliveryCompany(){
+        WebElement deliveryCompany = driver.findElement(deliveryCompanyElement);
+        return deliveryCompany.getText();
+    }
+
     // method to verify delivery address
-    public String getDeliveryAddress(){
-        WebElement deliveryAdd = driver.findElement(deliveryAddressElement);
+    public String getDeliveryAddressLine(){
+        WebElement deliveryAdd = driver.findElement(deliveryAddressLineElement);
         return deliveryAdd.getText();
     }
     // method to verify delivery postal
@@ -99,13 +108,20 @@ public class CheckOutPage {
         WebElement invoiceName = driver.findElement(invoiceNameElement);
         return invoiceName.getText();
     }
+
+    // method to verify invoice company
+    public String getInvoiceCompany(){
+        WebElement invoiceCompany = driver.findElement(invoiceCompanyElement);
+        return invoiceCompany.getText();
+    }
+
     // method to verify invoice address
-    public String getInvoiceAddress(){
-        WebElement invoiceAddress = driver.findElement(invoiceAddressElement);
+    public String getInvoiceAddressLine(){
+        WebElement invoiceAddress = driver.findElement(invoiceAddressLineElement);
         return invoiceAddress.getText();
     }
     // method to verify invoice postal
-    public String getInvoicePostal(){
+    public String getInvoiceCityStateZip(){
         WebElement invoicePostal = driver.findElement(invoicePostalElement);
         return invoicePostal.getText();
     }
@@ -167,7 +183,14 @@ public class CheckOutPage {
     }
     // method to click place order
     public PaymentPage clickPlaceOrderButton(){
-        driver.findElement(placeOrderButtonElement).click();
+        WebElement placeOrderButton = driver.findElement(placeOrderButtonElement);
+        // Scroll the element into view
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", placeOrderButton);
+
+        // Wait for the element to be clickable
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.elementToBeClickable(placeOrderButton));
+        placeOrderButton.click();
         return new PaymentPage(driver);
     }
 
@@ -181,7 +204,7 @@ public class CheckOutPage {
         }
     }
 
-    //Method to confirm loggged or logout
+    //Method to confirm logged or logout
     public HomePage clickLogout(){
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
