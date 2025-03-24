@@ -18,8 +18,8 @@ public class CartPage {
     private final By shoppingCartCrumbs = By.cssSelector("div.breadcrumbs > ol.breadcrumb>li.active");
     private final By emptyCartText = By.cssSelector("#empty_cart .text-center");
     private final By productsButton = By.cssSelector("#empty_cart .text-center a[href=\"/products\"]");
-//    private final By checkoutButton = By.cssSelector("div > a.check_out");
-    private final By checkoutButton = By.cssSelector("div.col-sm-6 > a");
+
+    private final By checkoutButton = By.cssSelector("div.col-sm-6 > a.check_out");
     private final By deleteButton = By.cssSelector("#cart_info_table tbody tr .cart_quantity_delete");
     private final By checkoutModal = By.id("checkoutModal");
 
@@ -83,6 +83,13 @@ public class CartPage {
     }
 
     public void clickProceedToCheckout(){
+        WebElement checkOutButton = driver.findElement(checkoutButton);
+        // Scroll the element into view
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", checkOutButton);
+
+        // Wait for the element to be clickable
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.elementToBeClickable(checkOutButton));
         driver.findElement(checkoutButton).click();
     }
 
