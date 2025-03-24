@@ -8,6 +8,7 @@ import org.junit.jupiter.api.*;
 import pages.AccountCreatedPage;
 import pages.AccountSetUpPage;
 import pages.AuthenticationsPage;
+import utils.RegistrationUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -95,33 +96,7 @@ public class VerifyRegistrationTest extends BaseTest {
         assertThat("Account created successfully", accountCreatedPage.getSectionTitleText(), containsStringIgnoringCase("Account Created"));
 
         // Save the registration data to auth_data.json
-        saveRegistrationData();
+        RegistrationUtils.saveRegistrationData(registrationData);
 
-    }
-
-
-    private void saveRegistrationData() throws IOException {
-        // Initialize ObjectMapper for JSON processing
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT); // Enable pretty-printing
-
-        // Define the path to the auth_data.json file
-        File file = new File("src/main/resources/data/auth_data.json");
-
-        // Read the existing JSON array from the file
-        List<Map<String, Object>> existingData;
-        if (file.exists() && file.length() > 0) {
-            existingData = objectMapper.readValue(file, objectMapper.getTypeFactory().constructCollectionType(List.class, Map.class));
-        } else {
-            existingData = new ArrayList<>();
-        }
-
-        // Add the new registration data to the existing array
-        existingData.add(registrationData);
-
-        // Write the updated array back to the file
-        objectMapper.writeValue(file, existingData);
-
-        System.out.println("Registration data saved successfully.");
     }
 }
