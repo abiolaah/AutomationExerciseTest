@@ -53,7 +53,9 @@ public class VerifyAccountSetUpTest extends BaseTest {
         registerPage.setRegisterNameElement(name);
         setUpPage= registerPage.clickRegister();
 
-        assertThat("The name value is should not be empty", setUpPage.getNameValue(), equalToIgnoringCase(name));
+        String username = setUpPage.getNameValue();;
+
+        assertThat("The name value is should not be empty", username, equalToIgnoringCase(name));
     }
 
     @Test
