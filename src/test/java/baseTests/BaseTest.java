@@ -9,6 +9,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+import org.openqa.selenium.chrome.ChromeOptions;
 import pages.HomePage;
 
 import java.io.File;
@@ -16,11 +17,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class BaseTest {
     public WebDriver driver;
     protected HomePage homePage;
+
+    // Define the download path in a platform-agnostic way
+    public final String downloadPath = System.getProperty("user.dir") + File.separator + "downloads";
 
     @BeforeAll
         public static void setUp(){
@@ -30,6 +35,22 @@ public class BaseTest {
 
         @BeforeEach
         public void setUpTest(){
+            // Set Chrome options
+            ChromeOptions options = new ChromeOptions();
+            HashMap<String, Object> chromePrefs = new HashMap<>();
+            chromePrefs.put("profile.default_content_settings.popups", 0);
+            chromePrefs.put("download.default_directory", downloadPath);
+            options.setExperimentalOption("prefs", chromePrefs);
+
+            // Create the download directory if it doesn't exist
+            File downloadDir = new File(downloadPath);
+            if (!downloadDir.exists()) {
+                boolean dirCreated = downloadDir.mkdirs();
+                if (!dirCreated) {
+                    throw new RuntimeException("Failed to create download directory: " + downloadPath);
+                }
+            }
+
             //instantiate with chromedriver
             driver = new ChromeDriver();
 
@@ -39,8 +60,8 @@ public class BaseTest {
             // Resize current window
             driver.manage().window().maximize();
 
-        //Load the home page
-        homePage = new HomePage(driver);
+            //Load the home page
+            homePage = new HomePage(driver);;
     }
 
     @AfterEach
