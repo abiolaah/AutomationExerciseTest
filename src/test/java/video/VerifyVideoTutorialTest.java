@@ -20,7 +20,7 @@ public class VerifyVideoTutorialTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("Confirm Page Title")
+    @DisplayName("Confirm Page Current URL")
     @Order(2)
     public void verifyPageUrl(){
         videoPage = homePage.clickVideoTutorialsNavigation();
