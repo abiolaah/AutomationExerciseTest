@@ -185,4 +185,22 @@
   "state" : "Alberta",
   "first_name" : "Abraham",
   "email" : "bella.block@gmail.com"
+}, {
+  "country" : "Canada",
+  "address" : "416 Weimann Wells",
+  "city" : "Wildermanville",
+  "last_name" : "Schuppe",
+  "title" : "Mrs",
+  "zip_code" : "R7R5C1",
+  "password" : "s0r6kcxpwfq",
+  "dob" : {
+    "year" : "1962",
+    "day" : "15",
+    "month" : "3"
+  },
+  "name" : "Mirella Schuppe",
+  "phone_number" : "170-318-4820",
+  "state" : "Prince Edward Island",
+  "first_name" : "Mirella",
+  "email" : "dorethea.okeefe@yahoo.ca"
 } ]
