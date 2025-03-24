@@ -1,9 +1,13 @@
 package pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,9 +48,21 @@ public class PaymentDonePage {
         return new HomePage(driver);
     }
 
-    //Method to confirm loggged or logout
+    //Method to confirm logged or logout
     public AuthenticationsPage clickLogout(){
-        driver.findElement(logoutButton).click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        // Wait for the logout button to be present in the DOM
+        WebElement logoutButtonElement = wait.until(ExpectedConditions.presenceOfElementLocated(logoutButton));
+
+        // Scroll the logout button into view using JavaScript
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", logoutButtonElement);
+
+        // Wait for the button to be clickable
+        wait.until(ExpectedConditions.elementToBeClickable(logoutButtonElement));
+
+        // Click the logout button
+        logoutButtonElement.click();
         return new AuthenticationsPage(driver);
     }
 }
