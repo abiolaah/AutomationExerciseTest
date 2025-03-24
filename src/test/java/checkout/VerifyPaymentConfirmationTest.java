@@ -1,5 +1,6 @@
 package checkout;
 
+import baseTests.BaseTest;
 import baseTests.DownloadBaseTest;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +22,7 @@ import java.util.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
+public class VerifyPaymentConfirmationTest extends BaseTest {
     protected AuthenticationsPage authPage;
     protected CartPage cartPage;
     protected CheckOutPage checkOutPage;
