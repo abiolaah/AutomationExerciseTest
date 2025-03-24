@@ -16,7 +16,7 @@ public class UserData {
     private String phoneNumber;
 
     // Constructor
-    public UserData(String name, String email, String title, String firstName, String lastName, String address, String country, String state, String city, String zipCode, String phoneNumber) {
+    public UserData(String name, String email, String title, String firstName, String lastName, String address, String country, String state, String city, String zipCode, String phoneNumber, String company) {
         this.name = name;
         this.email = email;
         this.title = title;
