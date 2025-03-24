@@ -80,12 +80,12 @@ public class VerifyProductsTest extends BaseTest {
 
     private static Stream<Arguments> provideCategoryFilterParameters() {
         return Stream.of(
-                Arguments.of("Women Dress", "Women - Dress"),
+                Arguments.of("Women Dress", "Dress"),
                 Arguments.of("Women Tops", "Women - Tops"),
-                Arguments.of("Women Saree", "Women - Saree"),
+                Arguments.of("Women Saree", "SAREE"),
                 Arguments.of("Men TShirt", "Men - TShirt"),
                 Arguments.of("Men Jeans", "Men - Jeans"),
-                Arguments.of("Kids Dress", "Kids - Dress"),
+                Arguments.of("Kids Dress", "DRESS"),
                 Arguments.of("Kids Tops and Shirt", "Kids - Tops & Shirts")
         );
     }
