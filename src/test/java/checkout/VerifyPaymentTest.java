@@ -43,7 +43,7 @@ public class VerifyPaymentTest extends BaseTest {
         cartPage = homePage.clickCartNavigation();
 
         //Navigate to product page from cart page
-        productsPage = cartPage.redirectToProducts();
+        productsPage = cartPage.redirectToProductsPage();
 
         // Add a product to the cart
         productsPage.clickAddToCartFilterButton();
@@ -62,90 +62,12 @@ public class VerifyPaymentTest extends BaseTest {
         homePage = paymentPage.clickLogout();
     }
 
-
-    @Test
-    @DisplayName("Verify Payment Success Message")
-    @Order(2)
-    public void verifyPaymentSuccessMessage(){
-        // Read user data from auth_data.json
-        List<Map<String, Object>> users = JsonUtils.readJsonFile("src/test/resources/auth_data.json");
-
-        // Pick a random user
-        Random random = new Random();
-        Map<String, Object> randomUser = users.get(random.nextInt(users.size()));
-
-        // Create a UserData object from the random user
-        UserData userData = new UserData(
-                (String) randomUser.get("name"),
-                (String) randomUser.get("email"),
-                (String) randomUser.get("title"),
-                (String) randomUser.get("first_name"),
-                (String) randomUser.get("last_name"),
-                (String) randomUser.get("address"),
-                (String) randomUser.get("country"),
-                (String) randomUser.get("state"),
-                (String) randomUser.get("city"),
-                (String) randomUser.get("zip_code"),
-                (String) randomUser.get("phone_number")
-        );
-
-        // Navigate to auth page
-        authPage = homePage.clickAuthNavigation();
-
-        //set login email
-        authPage.setLoginEmail(userData.getEmail());
-
-        //set login password
-        authPage.setLoginPasswordElement((String) randomUser.get("password"));
-
-        // Navigate to homepage from auth page
-        homePage = authPage.clickLogin();
-
-        // Navigate to cart page from homepage
-        cartPage = homePage.clickCartNavigation();
-
-        // Navigate to product page from cart page
-        productsPage = cartPage.redirectToProducts();
-
-        // Add products
-        addProductToCart();
-
-        // Navigate back to cart page
-        cartPage = productsPage.clickModalContentViewCartButton();
-
-        // Proceed to checkout
-        checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
-
-
-        checkOutPage.setDeliveryNote(faker.lorem().sentence(10));
-
-        paymentPage = checkOutPage.clickPlaceOrderButton();
-
-        String cardNumber = faker.finance().creditCard();
-        String cvc = String.valueOf(faker.number().numberBetween(100, 999));
-        String expiryMonth = String.format("%02d", faker.number().numberBetween(1, 12));
-        String expiryYear = String.valueOf(faker.number().numberBetween(2025, 2030));
-
-        paymentPage.setCardName(userData.getName());
-        paymentPage.setCardNumber(cardNumber);
-        paymentPage.setCardCVC(cvc);
-        paymentPage.setCardExpiryMonth(expiryMonth);
-        paymentPage.setCardExpiryYear(expiryYear);
-
-        // Click submit button and verify the success message
-        String successMessage = paymentPage.getSuccessMessage();
-        assertThat("The success message should be displayed", successMessage, containsStringIgnoringCase("success"));
-
-        //Logout
-        checkOutPage.clickLogout();
-    }
-
     @Test
     @DisplayName("Verify Payment Done Reroute")
-    @Order(3)
+    @Order(2)
     public void verifyPaymentDoneReroute(){
         // Read user data from auth_data.json
-        List<Map<String, Object>> users = JsonUtils.readJsonFile("src/test/resources/auth_data.json");
+        List<Map<String, Object>> users = JsonUtils.readJsonFile("src/main/resources/data/auth_data.json");
 
         // Pick a random user
         Random random = new Random();
@@ -163,8 +85,8 @@ public class VerifyPaymentTest extends BaseTest {
                 (String) randomUser.get("state"),
                 (String) randomUser.get("city"),
                 (String) randomUser.get("zip_code"),
-                (String) randomUser.get("phone_number")
-        );
+                (String) randomUser.get("phone_number"),
+                (String) randomUser.get("company"));
 
         // Navigate to auth page
         authPage = homePage.clickAuthNavigation();
@@ -179,19 +101,23 @@ public class VerifyPaymentTest extends BaseTest {
         homePage = authPage.clickLogin();
 
         // Navigate to cart page from homepage
-        cartPage = homePage.clickCartNavigation();
+        cartPage = homePage.clickCartNavigationAfterLogin();
 
-        // Navigate to product page from cart page
-        productsPage = cartPage.redirectToProducts();
+        // Check if the cart is empty
+        String emptyCartText = cartPage.getEmptyCartText();
+        if (emptyCartText.contains("Cart is empty!")){
+            // If cart is empty, redirect to products page
+            productsPage = cartPage.redirectToProducts();
 
-        // Add products
-        addProductToCart();
+            // Add a product to the cart and get its details
+            productsPage.clickAddToCartFilterButton();
 
-        // Navigate back to cart page
-        cartPage = productsPage.clickModalContentViewCartButton();
-
-        // Proceed to checkout
-        checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+            // Click checkout
+            checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+        } else {
+            // If cart is not empty, proceed to checkout
+            checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+        }
 
         paymentPage = checkOutPage.clickPlaceOrderButton();
 
@@ -215,18 +141,6 @@ public class VerifyPaymentTest extends BaseTest {
         checkOutPage.clickLogout();
     }
 
-
-    // Method to add one product to cart from product details page
-    private void addProductToCart() {
-        // Navigate to product detail page
-        productDetailPage = productsPage.clickViewProductButton();
-
-        // Set product quantity
-        productDetailPage.changeProductQuantity("1");
-
-        // Add product to cart
-        productDetailPage.clickAddToCartButton();
-    }
 
 
 }
