@@ -140,7 +140,4 @@ public class VerifyPaymentTest extends BaseTest {
         // Logout
         checkOutPage.clickLogout();
     }
-
-
-
 }
