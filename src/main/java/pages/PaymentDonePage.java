@@ -8,8 +8,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PaymentDonePage {
     private final WebDriver driver;
@@ -27,15 +25,6 @@ public class PaymentDonePage {
     public String getSectionTitle(){
         WebElement sectionTitle = driver.findElement(sectionTitleElement);
         return sectionTitle.getText();
-    }
-    // method to get section text
-    public List<String> getSectionParagraphText(){
-        List<WebElement> sectionTextElements = driver.findElements(sectionTextElement);
-        List<String> text = new ArrayList<>();
-        for (WebElement element: sectionTextElements){
-            text.add(element.getText().trim());
-        }
-        return text;
     }
 
     // method to get section text
