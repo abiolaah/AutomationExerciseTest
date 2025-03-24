@@ -91,25 +91,98 @@
   "state" : "Northwest Territories",
   "first_name" : "Dr.",
   "email" : "charlette.morar@hotmail.com"
-},
-  {
-    "country":"Canada",
-    "address":"062 Dewey Union",
-    "city":"South Robert",
-    "last_name":"Stanley",
-    "title":"Mr",
-    "zip_code":"X0S6A6",
-    "password":"63p9aju8a",
-    "dob":{
-      "year":"1994",
-      "day":"23",
-      "month":"3"
-    },
-    "name":"Miss Stanley Schaden",
-    "phone_number":"526.137.6876",
-    "state":"Newfoundland and Labrador",
-    "first_name":"Miss",
-    "email":"adaline.mcglynn@hotmail.com"
-  }
-
-]
+}, {
+  "country" : "Canada",
+  "address" : "062 Dewey Union",
+  "city" : "South Robert",
+  "last_name" : "Stanley",
+  "title" : "Mr",
+  "zip_code" : "X0S6A6",
+  "password" : "63p9aju8a",
+  "dob" : {
+    "year" : "1994",
+    "day" : "23",
+    "month" : "3"
+  },
+  "name" : "Miss Stanley Schaden",
+  "phone_number" : "526.137.6876",
+  "state" : "Newfoundland and Labrador",
+  "first_name" : "Miss",
+  "email" : "adaline.mcglynn@hotmail.com"
+}, {
+  "country" : "Canada",
+  "address" : "0700 Jerrell Lock",
+  "city" : "New Julioport",
+  "last_name" : "Okuneva",
+  "title" : "Mr",
+  "zip_code" : "P0K7Z3",
+  "password" : "a2zozzxmutwxqs",
+  "dob" : {
+    "year" : "1980",
+    "day" : "10",
+    "month" : "8"
+  },
+  "name" : "Zack Okuneva",
+  "company" : "Hirthe, Simonis and Crooks",
+  "phone_number" : "1-380-074-4791",
+  "state" : "Quebec",
+  "first_name" : "Zack",
+  "email" : "lesha.bartell@hotmail.com"
+}, {
+  "country" : "Canada",
+  "address" : "09875 Shayne Gateway",
+  "city" : "North Zachery",
+  "last_name" : "Anette",
+  "title" : "Mr",
+  "zip_code" : "V1R 1J3",
+  "password" : "hygrezn32gv",
+  "dob" : {
+    "year" : "1991",
+    "day" : "2",
+    "month" : "3"
+  },
+  "name" : "Mr. Anette O'Keefe",
+  "company" : "Cummerata, Jacobi and Padberg",
+  "phone_number" : "1-126-976-2821",
+  "state" : "Ontario",
+  "first_name" : "Mr.",
+  "email" : "homer.sawayn@yahoo.ca"
+}, {
+  "country" : "Canada",
+  "address" : "1045 Noella Ridge",
+  "city" : "Emoryborough",
+  "last_name" : "Parisian",
+  "title" : "Mr",
+  "zip_code" : "P4K5L4",
+  "password" : "y7y9mroq7rgo",
+  "dob" : {
+    "year" : "1985",
+    "day" : "18",
+    "month" : "4"
+  },
+  "name" : "Salvador Parisian",
+  "company" : "Walter-Bernier",
+  "phone_number" : "(531) 075-0001",
+  "state" : "Ontario",
+  "first_name" : "Salvador",
+  "email" : "regina.ziemann@gmail.com"
+}, {
+  "country" : "Canada",
+  "address" : "0480 Gleichner Extension",
+  "city" : "Jastbury",
+  "last_name" : "Lubowitz",
+  "title" : "Mr",
+  "zip_code" : "V5Z1P7",
+  "password" : "bxxk3zcppgxg",
+  "dob" : {
+    "year" : "1950",
+    "day" : "4",
+    "month" : "4"
+  },
+  "name" : "Abraham Lubowitz",
+  "company" : "Predovic-Bernier",
+  "phone_number" : "1-793-599-9136",
+  "state" : "Alberta",
+  "first_name" : "Abraham",
+  "email" : "bella.block@gmail.com"
+} ]
