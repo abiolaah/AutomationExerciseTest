@@ -1,6 +1,9 @@
 package checkout;
 
 import baseTests.BaseTest;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.*;
 import pages.*;
 import utils.CartProduct;
@@ -110,7 +113,7 @@ public class VerifyCheckOutTest extends BaseTest {
     @Test
     @DisplayName("Verify Delivery Address Data")
     @Order(3)
-    public void verifyDeliveryAddressDataText(){
+    public void verifyDeliveryAddressDataText() {
         // Read user data from auth_data.json
         List<Map<String, Object>> users = JsonUtils.readJsonFile("src/main/resources/data/auth_data.json");
 
@@ -130,7 +133,8 @@ public class VerifyCheckOutTest extends BaseTest {
                 (String) randomUser.get("state"),
                 (String) randomUser.get("city"),
                 (String) randomUser.get("zip_code"),
-                (String) randomUser.get("phone_number")
+                (String) randomUser.get("phone_number"),
+                (String) randomUser.get("company") // Add company to UserData
         );
 
         // Navigate to auth page
@@ -167,18 +171,19 @@ public class VerifyCheckOutTest extends BaseTest {
         }
 
         // Retrieve delivery address from the website
-
         String deliveryName = checkOutPage.getDeliveryName(); // Includes title (e.g., "Mrs. Amy Andrew")
-        String deliveryAddress = checkOutPage.getDeliveryAddress(); // Full address
+        String deliveryCompany = checkOutPage.getDeliveryCompany(); // Company name
+        String deliveryAddress = checkOutPage.getDeliveryAddressLine(); // Full address
         String deliveryCityStateZip = checkOutPage.getDeliveryCityStateZip(); // e.g., "Montreal Quebec T5N 0I9"
         String deliveryCountry = checkOutPage.getDeliveryCountry(); // e.g., "Canada"
         String deliveryPhone = checkOutPage.getDeliveryPhone(); // e.g., "7603218970"
 
-        // Split city, state, and zip code
-        String[] cityStateZipParts = deliveryCityStateZip.split(" ");
-        String deliveryCity = cityStateZipParts[0]; // e.g., "Montreal"
-        String deliveryState = cityStateZipParts[1]; // e.g., "Quebec"
-        String deliveryZipCode = cityStateZipParts[2] + " " + cityStateZipParts[3]; // e.g., "T5N 0I9"
+        // Extract city, state, and zip code
+        String[] extractedData = extractCityStateZip(deliveryCityStateZip);
+        String deliveryCity = extractedData[0]; // e.g., "Montreal"
+        String deliveryState = extractedData[1]; // e.g., "Quebec"
+        String deliveryZipCode = extractedData[2]; // e.g., "T5N 0I9"
+
 
         // Retrieve delivery address from the website
         UserData deliveryAddressData = new UserData(
@@ -192,8 +197,8 @@ public class VerifyCheckOutTest extends BaseTest {
                 deliveryState,
                 deliveryCity,
                 deliveryZipCode,
-                deliveryPhone
-        );
+                deliveryPhone,
+                deliveryCompany );
 
         // Assert that the delivery address matches the user data
         assertThat("The delivery address should match the user's address in auth_data.json",
@@ -215,7 +220,7 @@ public class VerifyCheckOutTest extends BaseTest {
 
         // Create a UserData object from the random user
         UserData userData = new UserData(
-                (String) randomUser.get("name"),
+                (String) randomUser.get("title") + "." + " " + (String) randomUser.get("first_name") + " " + (String) randomUser.get("last_name"), // Include title in name
                 (String) randomUser.get("email"),
                 (String) randomUser.get("title"),
                 (String) randomUser.get("first_name"),
@@ -225,8 +230,8 @@ public class VerifyCheckOutTest extends BaseTest {
                 (String) randomUser.get("state"),
                 (String) randomUser.get("city"),
                 (String) randomUser.get("zip_code"),
-                (String) randomUser.get("phone_number")
-        );
+                (String) randomUser.get("phone_number"),
+                (String) randomUser.get("company"));
 
         // Navigate to auth page
         authPage = homePage.clickAuthNavigation();
@@ -261,20 +266,34 @@ public class VerifyCheckOutTest extends BaseTest {
             checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
         }
 
+        // Retrieve delivery address from the website
+        String invoiceName = checkOutPage.getInvoiceName(); // Includes title (e.g., "Mrs. Amy Andrew")
+        String invoiceCompany = checkOutPage.getInvoiceCompany(); // Company name
+        String invoiceAddress = checkOutPage.getInvoiceAddressLine(); // Full address
+        String invoiceCityStateZip = checkOutPage.getInvoiceCityStateZip(); // e.g., "Montreal Quebec T5N 0I9"
+        String invoiceCountry = checkOutPage.getInvoiceCountry(); // e.g., "Canada"
+        String invoicePhone = checkOutPage.getInvoicePhone(); // e.g., "7603218970"
+
+        // Extract city, state, and zip code
+        String[] extractedData = extractCityStateZip(invoiceCityStateZip);
+        String invoiceCity = extractedData[0]; // e.g., "Montreal"
+        String invoiceState = extractedData[1]; // e.g., "Quebec"
+        String invoiceZipCode = extractedData[2]; // e.g., "T5N 0I9"
+
         // Retrieve billing address from the website
         UserData billingAddress = new UserData(
-                checkOutPage.getInvoiceName(),
+                invoiceName,
                 userData.getEmail(),
                 userData.getTitle(),
                 userData.getFirstName(),
                 userData.getLastName(),
-                checkOutPage.getInvoiceAddress(),
-                checkOutPage.getInvoiceCountry(),
-                userData.getState(),
-                userData.getCity(),
-                checkOutPage.getInvoicePostal(),
-                checkOutPage.getInvoicePhone()
-        );
+                invoiceAddress,
+                invoiceCountry,
+                invoiceState,
+                invoiceCity,
+                invoiceZipCode,
+                invoicePhone,
+                invoiceCompany);
 
         // Assert that the billing address matches the user data
         assertThat("The billing address should match the user's address in auth_data.json",
@@ -488,5 +507,76 @@ public class VerifyCheckOutTest extends BaseTest {
         } else {
             throw new IllegalStateException("Logout button is not visible. User might not be logged in.");
         }
+    }
+
+
+    // Helper method to extract city, state, and zip code from the deliveryCityStateZip string
+    private String[] extractCityStateZip(String deliveryCityStateZip) {
+        // List of Canadian provinces and territories
+        List<String> canadianProvinces = List.of(
+                "Alberta", "British Columbia", "Manitoba", "New Brunswick",
+                "Newfoundland and Labrador", "Nova Scotia", "Ontario",
+                "Prince Edward Island", "Quebec", "Saskatchewan", "Northwest Territories",
+                "Nunavut", "Yukon"
+        );
+
+        // Regex to match the zip code (e.g., "T5N 0I9" or "T5N0I9")
+        String zipCodeRegex = "[A-Za-z]\\d[A-Za-z][ -]?\\d[A-Za-z]\\d";
+
+        // Find the zip code in the string
+        java.util.regex.Matcher zipCodeMatcher = java.util.regex.Pattern.compile(zipCodeRegex).matcher(deliveryCityStateZip);
+        String zipCode = "";
+        if (zipCodeMatcher.find()) {
+            zipCode = zipCodeMatcher.group().trim();
         }
+
+        // Remove the zip code from the string to isolate city and state
+        String cityState = deliveryCityStateZip.replace(zipCode, "").trim();
+
+        // Iterate through the list of provinces to find the state
+        String state = "";
+        for (String province : canadianProvinces) {
+            if (cityState.endsWith(province)) {
+                state = province;
+                break;
+            }
+        }
+
+        // Extract the city by removing the state from the cityState string
+        String city = cityState.replace(state, "").trim();
+
+        return new String[]{city, state, zipCode};
+    }
+
+    // Custom matcher to check if the delivery address contains the expected user data
+    private static Matcher<UserData> containsUserData(UserData expectedUserData) {
+        return new TypeSafeMatcher<UserData>() {
+            @Override
+            protected boolean matchesSafely(UserData actualUserData) {
+                return actualUserData.getName().contains(expectedUserData.getName()) &&
+                        actualUserData.getEmail().contains(expectedUserData.getEmail()) &&
+                        actualUserData.getTitle().contains(expectedUserData.getTitle()) &&
+                        actualUserData.getFirstName().contains(expectedUserData.getFirstName()) &&
+                        actualUserData.getLastName().contains(expectedUserData.getLastName()) &&
+                        actualUserData.getAddress().contains(expectedUserData.getAddress()) &&
+                        actualUserData.getCountry().contains(expectedUserData.getCountry()) &&
+                        actualUserData.getState().contains(expectedUserData.getState()) &&
+                        actualUserData.getCity().contains(expectedUserData.getCity()) &&
+                        actualUserData.getZipCode().contains(expectedUserData.getZipCode()) &&
+                        actualUserData.getPhoneNumber().contains(expectedUserData.getPhoneNumber());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("a UserData object containing ")
+                        .appendValue(expectedUserData);
+            }
+
+            @Override
+            protected void describeMismatchSafely(UserData actualUserData, Description mismatchDescription) {
+                mismatchDescription.appendText("was ")
+                        .appendValue(actualUserData);
+            }
+        };
+    }
 }
