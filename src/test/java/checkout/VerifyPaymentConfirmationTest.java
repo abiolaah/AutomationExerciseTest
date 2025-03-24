@@ -185,9 +185,10 @@ public class VerifyPaymentConfirmationTest extends BaseTest {
         paymentDonePage = paymentPage.clickSubmitButton();
 
         // Verify the section text
-        List<String> sectionText = paymentDonePage.getSectionText();
+        String sectionText = paymentDonePage.getSectionText();
+
         assertThat("The section text should contain the expected confirmation message",
-                sectionText, hasItem(containsStringIgnoringCase("Your order has been confirmed!")));
+                sectionText, containsStringIgnoringCase("Your order has been confirmed!"));
 
         authPage = paymentDonePage.clickLogout();
     }
