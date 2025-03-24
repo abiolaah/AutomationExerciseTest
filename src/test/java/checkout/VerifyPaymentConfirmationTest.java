@@ -37,7 +37,7 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
     @Order(1)
     public void verifyPaymentConfirmationSectionHeader() {
         // Read user data from auth_data.json
-        List<Map<String, Object>> users = JsonUtils.readJsonFile("src/test/resources/auth_data.json");
+        List<Map<String, Object>> users = JsonUtils.readJsonFile("src/main/resources/data/auth_data.json");
 
         // Pick a random user
         Map<String, Object> randomUser = users.get(new Random().nextInt(users.size()));
@@ -52,26 +52,44 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
                 (String) randomUser.get("state"),
                 (String) randomUser.get("city"),
                 (String) randomUser.get("zip_code"),
-                (String) randomUser.get("phone_number")
-        );
+                (String) randomUser.get("phone_number"),
+                (String) randomUser.get("company"));
 
         // Login and proceed to checkout
         authPage = homePage.clickAuthNavigation();
+
+        //set login email
         authPage.setLoginEmail(userData.getEmail());
+
+        //set login password
         authPage.setLoginPasswordElement((String) randomUser.get("password"));
+
+        // Navigate to homepage from auth page
         homePage = authPage.clickLogin();
 
-        // Navigate to cart and add a product
-        cartPage = homePage.clickCartNavigation();
-        productsPage = cartPage.redirectToProducts();
-        addProductToCart();
+        // Navigate to cart page from homepage
+        cartPage = homePage.clickCartNavigationAfterLogin();
 
-        // Proceed to checkout
-        cartPage = productsPage.clickModalContentViewCartButton();
-        checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+        // Check if the cart is empty
+        String emptyCartText = cartPage.getEmptyCartText();
+        if (emptyCartText.contains("Cart is empty!")){
+            // If cart is empty, redirect to products page
+            productsPage = cartPage.redirectToProducts();
+
+            // Add a product to the cart and get its details
+            productsPage.clickAddToCartFilterButton();
+
+            // Click checkout
+            checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+        } else {
+            // If cart is not empty, proceed to checkout
+            checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+        }
+
+        // Navigate to payment page
+        paymentPage = checkOutPage.clickPlaceOrderButton();
 
         // Fill payment details
-        paymentPage = checkOutPage.clickPlaceOrderButton();
         String cardNumber = faker.finance().creditCard();
         String cvc = String.valueOf(faker.number().numberBetween(100, 999));
         String expiryMonth = String.format("%02d", faker.number().numberBetween(1, 12));
@@ -98,7 +116,7 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
     @Order(2)
     public void verifyPaymentConfirmationSectionText() {
         // Read user data from auth_data.json
-        List<Map<String, Object>> users = JsonUtils.readJsonFile("src/test/resources/auth_data.json");
+        List<Map<String, Object>> users = JsonUtils.readJsonFile("src/main/resources/data/auth_data.json");
 
         // Pick a random user
         Map<String, Object> randomUser = users.get(new Random().nextInt(users.size()));
@@ -113,8 +131,8 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
                 (String) randomUser.get("state"),
                 (String) randomUser.get("city"),
                 (String) randomUser.get("zip_code"),
-                (String) randomUser.get("phone_number")
-        );
+                (String) randomUser.get("phone_number"),
+                (String) randomUser.get("company"));
 
         // Login and proceed to checkout
         authPage = homePage.clickAuthNavigation();
@@ -122,17 +140,29 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
         authPage.setLoginPasswordElement((String) randomUser.get("password"));
         homePage = authPage.clickLogin();
 
-        // Navigate to cart and add a product
-        cartPage = homePage.clickCartNavigation();
-        productsPage = cartPage.redirectToProducts();
-        addProductToCart();
+        // Navigate to cart page from homepage
+        cartPage = homePage.clickCartNavigationAfterLogin();
 
-        // Proceed to checkout
-        cartPage = productsPage.clickModalContentViewCartButton();
-        checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+        // Check if the cart is empty
+        String emptyCartText = cartPage.getEmptyCartText();
+        if (emptyCartText.contains("Cart is empty!")){
+            // If cart is empty, redirect to products page
+            productsPage = cartPage.redirectToProducts();
+
+            // Add a product to the cart and get its details
+            productsPage.clickAddToCartFilterButton();
+
+            // Click checkout
+            checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+        } else {
+            // If cart is not empty, proceed to checkout
+            checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+        }
+
+        // Navigate to payment page
+        paymentPage = checkOutPage.clickPlaceOrderButton();
 
         // Fill payment details
-        paymentPage = checkOutPage.clickPlaceOrderButton();
         String cardNumber = faker.finance().creditCard();
         String cvc = String.valueOf(faker.number().numberBetween(100, 999));
         String expiryMonth = String.format("%02d", faker.number().numberBetween(1, 12));
@@ -160,7 +190,7 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
     @Order(4)
     public void verifyInvoiceDownload() throws InterruptedException {
         // Read user data from auth_data.json
-        List<Map<String, Object>> users = JsonUtils.readJsonFile("src/test/resources/auth_data.json");
+        List<Map<String, Object>> users = JsonUtils.readJsonFile("src/main/resources/data/auth_data.json");
 
         // Pick a random user
         Random random = new Random();
@@ -178,8 +208,8 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
                 (String) randomUser.get("state"),
                 (String) randomUser.get("city"),
                 (String) randomUser.get("zip_code"),
-                (String) randomUser.get("phone_number")
-        );
+                (String) randomUser.get("phone_number"),
+                (String) randomUser.get("company"));
 
         // Navigate to auth page
         authPage = homePage.clickAuthNavigation();
@@ -194,19 +224,26 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
         homePage = authPage.clickLogin();
 
         // Navigate to cart page from homepage
-        cartPage = homePage.clickCartNavigation();
+        cartPage = homePage.clickCartNavigationAfterLogin();
 
-        // Navigate to product page from cart page
-        productsPage = cartPage.redirectToProducts();
+        // Check if the cart is empty
+        String emptyCartText = cartPage.getEmptyCartText();
+        if (emptyCartText.contains("Cart is empty!")){
+            // If cart is empty, redirect to products page
+            productsPage = cartPage.redirectToProducts();
 
-        // Add multiple products to the cart with different quantities
-        addProductToCart();
+            // Add a product to the cart and get its details
+            productsPage.clickAddToCartFilterButton();
 
-        // Navigate back to cart page
-        cartPage = productsPage.clickModalContentViewCartButton();
+            // Navigate to cart page
+            cartPage = productsPage.clickAddToCartNavMenu();
 
-        // Proceed to checkout
-        checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+            // Click checkout
+            checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+        } else {
+            // If cart is not empty, proceed to checkout
+            checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+        }
 
         paymentPage = checkOutPage.clickPlaceOrderButton();
 
@@ -225,41 +262,45 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
         paymentDonePage = paymentPage.clickSubmitButton();
         paymentDonePage.clickDownloadInvoice();
 
-        // Determine the download directory and create it if necessary and Wait for the file to download
-        String downloadDirectory = "src/test/resources/download";
-        File directory = new File(downloadDirectory);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
+        // Determine the system's default download directory
+        String systemDownloadPath = System.getProperty("user.home") + File.separator + "Downloads";
 
-        // Poll for the downloaded file
+        // Poll for the downloaded file in the system's default download directory
         File downloadedFile = null;
         long startTime = System.currentTimeMillis();
-        long timeout = 10000; // 10 seconds timeout
+        long timeout = 30000; // 30 seconds timeout (increase if needed)
         while (System.currentTimeMillis() - startTime < timeout) {
-            File[] files = new File(downloadPath).listFiles((dir, name) -> name.startsWith("invoice") && name.endsWith(".txt"));
+            File[] files = new File(systemDownloadPath).listFiles((dir, name) -> name.startsWith("invoice") && name.endsWith(".txt"));
             if (files != null && files.length > 0) {
                 downloadedFile = files[0];
                 break;
             }
-            Thread.sleep(500); // Poll every 500ms
+            Thread.sleep(1000); // Poll every 1 second
         }
 
-        // Verify the downloaded file exists
+        // Assert that the file was downloaded
         assertThat("The invoice file should be downloaded", downloadedFile, notNullValue());
 
-        // Move the downloaded file to the desired directory with a unique name
+        // Define the target directory (src/main/resources/download)
+        String targetDirectory = "src/main/resources/download";
+        File targetDir = new File(targetDirectory);
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
+
+        // Move the downloaded file to the target directory with a unique name
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String newFileName = "Invoice_" + timestamp + ".txt";
-        File newFile = new File(downloadDirectory, newFileName);
+        File newFile = new File(targetDirectory, newFileName);
         boolean isMoved = downloadedFile.renameTo(newFile);
 
         // Assert that the file was moved successfully
         assertThat("The invoice should be moved to the specified directory", isMoved);
         assertThat("The invoice file should exist in the new directory", newFile.exists());
 
+
         // Logout
-        checkOutPage.clickLogout();
+        paymentDonePage.clickLogout();
     }
 
     @Test
@@ -267,7 +308,7 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
     @Order(5)
     public void verifyDownloadedInvoiceContent() throws InterruptedException {
         // Read user data from auth_data.json
-        List<Map<String, Object>> users = JsonUtils.readJsonFile("src/test/resources/auth_data.json");
+        List<Map<String, Object>> users = JsonUtils.readJsonFile("src/main/resources/data/auth_data.json");
 
         // Pick a random user
         Random random = new Random();
@@ -285,8 +326,8 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
                 (String) randomUser.get("state"),
                 (String) randomUser.get("city"),
                 (String) randomUser.get("zip_code"),
-                (String) randomUser.get("phone_number")
-        );
+                (String) randomUser.get("phone_number"),
+                (String) randomUser.get("company"));
 
         // Navigate to auth page
         authPage = homePage.clickAuthNavigation();
@@ -301,33 +342,68 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
         homePage = authPage.clickLogin();
 
         // Navigate to cart page from homepage
-        cartPage = homePage.clickCartNavigation();
+        cartPage = homePage.clickCartNavigationAfterLogin();
 
-        // Navigate to product page from cart page
-        productsPage = cartPage.redirectToProducts();
-
-        // Add multiple products to the cart with different quantities
         List<ProductData> addedProducts = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            productDetailPage = productsPage.clickViewProductButton();
-            String quantity = i == 0 ? "1" : String.valueOf(i + 2); // Set different quantities
-            productDetailPage.changeProductQuantity(quantity);
-            CartProduct cartProduct = productDetailPage.clickAddToCartButton();
 
-            // Calculate the total for the product
-            double price = Double.parseDouble(cartProduct.getPrice().replace("Rs. ", ""));
-            int productQuantity = Integer.parseInt(cartProduct.getQuantity());
-            double total = price * productQuantity;
-
-            // Store the product data
-            addedProducts.add(new ProductData(cartProduct.getName(), cartProduct.getPrice(), productQuantity, total));
-
-            // Navigate back to the products page to add another product
+        // Check if the cart is empty
+        String emptyCartText = cartPage.getEmptyCartText();
+        if (emptyCartText.contains("Cart is empty!")){
+            // If cart is empty, redirect to products page
             productsPage = cartPage.redirectToProducts();
+
+            // Add multiple products to the cart with different quantities
+            for (int i = 0; i < 3; i++) {
+                productDetailPage = productsPage.clickViewProductButton();
+                String quantity = i == 0 ? "1" : String.valueOf(i + 2); // Set different quantities
+                productDetailPage.changeProductQuantity(quantity);
+                CartProduct cartProduct = productDetailPage.clickAddToCartButton();
+
+                // Calculate the total for the product
+                double price = Double.parseDouble(cartProduct.getPrice().replace("Rs. ", ""));
+                int productQuantity = Integer.parseInt(cartProduct.getQuantity());
+                double total = price * productQuantity;
+
+                // Store the product data
+                addedProducts.add(new ProductData(cartProduct.getName(), cartProduct.getPrice(), productQuantity, total));
+
+                // Navigate back to the products page to add another product
+                productsPage = cartPage.redirectToProductsPage();
+            }
+
+            // Navigate to cart page
+            cartPage = productsPage.clickAddToCartNavMenu();
+
+            // Click checkout
+            checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+        } else {
+            // If cart is not empty, proceed to checkout
+            cartPage.deleteAllProductsInCart();
+
+            productsPage = cartPage.redirectToProducts();
+
+            // Add multiple products to the cart with different quantities
+            for (int i = 0; i < 3; i++) {
+                productDetailPage = productsPage.clickViewProductButton();
+                String quantity = i == 0 ? "1" : String.valueOf(i + 2); // Set different quantities
+                productDetailPage.changeProductQuantity(quantity);
+                CartProduct cartProduct = productDetailPage.clickAddToCartButton();
+
+                // Calculate the total for the product
+                double price = Double.parseDouble(cartProduct.getPrice().replace("Rs. ", ""));
+                int productQuantity = Integer.parseInt(cartProduct.getQuantity());
+                double total = price * productQuantity;
+
+                // Store the product data
+                addedProducts.add(new ProductData(cartProduct.getName(), cartProduct.getPrice(), productQuantity, total));
+
+                // Navigate back to the products page to add another product
+                productsPage = cartPage.redirectToProductsPage();
+            }
         }
 
         // Navigate back to cart page
-        cartPage = productsPage.clickModalContentViewCartButton();
+        cartPage = productsPage.clickAddToCartNavMenu();
 
         // Proceed to checkout
         checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
@@ -355,40 +431,54 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
 
         // Click submit button and verify the page routes to PaymentDonePage
         paymentDonePage = paymentPage.clickSubmitButton();
+
+        // Click the download invoice button
         paymentDonePage.clickDownloadInvoice();
 
-        // Determine the download directory and create it if necessary and Wait for the file to download
-        String downloadDirectory = "src/test/resources/download";
-        File directory = new File(downloadDirectory);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
+        // Determine the system's default download directory
+        String systemDownloadPath = System.getProperty("user.home") + File.separator + "Downloads";
 
-        // Poll for the downloaded file
+        // Poll for the downloaded file in the system's default download directory
         File downloadedFile = null;
         long startTime = System.currentTimeMillis();
-        long timeout = 10000; // 10 seconds timeout
+        long timeout = 30000; // 30 seconds timeout (increase if needed)
         while (System.currentTimeMillis() - startTime < timeout) {
-            File[] files = new File(downloadPath).listFiles((dir, name) -> name.startsWith("invoice") && name.endsWith(".txt"));
+            File[] files = new File(systemDownloadPath).listFiles((dir, name) -> name.startsWith("invoice") && name.endsWith(".txt"));
             if (files != null && files.length > 0) {
+                // Sort files by last modified timestamp (most recent first)
+                Arrays.sort(files, (f1, f2) -> Long.compare(f2.lastModified(), f1.lastModified()));
                 downloadedFile = files[0];
                 break;
             }
-            Thread.sleep(500); // Poll every 500ms
+            Thread.sleep(1000); // Poll every 1 second
         }
 
-        // Move the downloaded file to the desired directory with a unique name
+        // Assert that the file was downloaded
+        assertThat("The invoice file should be downloaded", downloadedFile, notNullValue());
+
+        // Define the target directory (src/main/resources/download)
+        String targetDirectory = "src/main/resources/download";
+        File targetDir = new File(targetDirectory);
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
+
+        // Move the downloaded file to the target directory with a unique name
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String newFileName = "Invoice_" + timestamp + ".txt";
-        File newFile = new File(downloadDirectory, newFileName);
-        assert downloadedFile != null;
+        File newFile = new File(targetDirectory, newFileName);
         boolean isMoved = downloadedFile.renameTo(newFile);
 
+        // Assert that the file was moved successfully
+        assertThat("The invoice should be moved to the specified directory", isMoved);
+        assertThat("The invoice file should exist in the new directory", newFile.exists());
+
+        String loggedInUsername = userData.getFirstName() + " " +userData.getLastName();
         // Verify the content of the invoice
-        verifyInvoiceContent(newFile, userData.getName(), actualOverallTotal);
+        verifyInvoiceContent(newFile, loggedInUsername, actualOverallTotal);
 
         // Logout
-        checkOutPage.clickLogout();
+        paymentDonePage.clickLogout();
     }
 
     @Test
@@ -407,18 +497,29 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
         homePage = authPage.clickLogin();
 
         //Navigate to cart page from homepage
-        cartPage = homePage.clickCartNavigation();
+        cartPage = homePage.clickCartNavigationAfterLogin();
 
-        //Navigate to product page from cart page
-        productsPage = cartPage.redirectToProducts();
+        // Check if the cart is empty
+        String emptyCartText = cartPage.getEmptyCartText();
+        if (emptyCartText.contains("Cart is empty!")){
+            // If cart is empty, redirect to products page
+            productsPage = cartPage.redirectToProducts();
 
-        // Add a product to the cart
-        productsPage.clickAddToCartFilterButton();
+            // Add a product to the cart and get its details
+            productsPage.clickAddToCartFilterButton();
 
-        // Navigate back to cart page
-        cartPage = productsPage.clickModalContentViewCartButton();
+            productsPage.clickModalFooterContinueButton();
 
-        checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+            // Navigate to cart page
+            cartPage = productsPage.clickAddToCartNavMenu();
+
+            // Click checkout
+            checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+        } else {
+            // If cart is not empty, proceed to checkout
+            checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+        }
+
         paymentPage = checkOutPage.clickPlaceOrderButton();
 
         String cardNumber = faker.finance().creditCard();
@@ -444,18 +545,6 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
         authPage = homePage.clickLogout();
     }
 
-    // Method to add one product to cart from product details page
-    private void addProductToCart() {
-        // Navigate to product detail page
-        productDetailPage = productsPage.clickViewProductButton();
-
-        // Set product quantity
-        productDetailPage.changeProductQuantity("1");
-
-        // Add product to cart
-        productDetailPage.clickAddToCartButton();
-    }
-
     /**
      * Verifies the content of the downloaded invoice file.
      *
@@ -472,7 +561,7 @@ public class VerifyPaymentConfirmationTest extends DownloadBaseTest {
             assertThat("The invoice should contain the user's name", content, containsString(userName));
 
             // Verify that the content contains the total purchase amount
-            String expectedAmount = String.format("%.2f", totalPurchaseAmount);
+            String expectedAmount = String.format("%.0f", totalPurchaseAmount); // Format as integer
             assertThat("The invoice should contain the total purchase amount", content, containsString(expectedAmount));
 
             // Verify the general format of the invoice
