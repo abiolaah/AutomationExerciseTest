@@ -1,11 +1,8 @@
 package checkout;
 
 import baseTests.BaseTest;
-import baseTests.DownloadBaseTest;
 import com.github.javafaker.Faker;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import pages.*;
 import utils.CartProduct;
 import utils.JsonUtils;
@@ -22,6 +19,7 @@ import java.util.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class VerifyPaymentConfirmationTest extends BaseTest {
     protected AuthenticationsPage authPage;
     protected CartPage cartPage;
@@ -79,6 +77,10 @@ public class VerifyPaymentConfirmationTest extends BaseTest {
 
             // Add a product to the cart and get its details
             productsPage.clickAddToCartFilterButton();
+
+            productsPage.clickModalFooterContinueButton();
+
+            cartPage = productsPage.clickAddToCartNavMenu();
 
             // Click checkout
             checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
@@ -153,6 +155,10 @@ public class VerifyPaymentConfirmationTest extends BaseTest {
             // Add a product to the cart and get its details
             productsPage.clickAddToCartFilterButton();
 
+            productsPage.clickModalFooterContinueButton();
+
+            cartPage = productsPage.clickAddToCartNavMenu();
+
             // Click checkout
             checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
         } else {
@@ -188,7 +194,7 @@ public class VerifyPaymentConfirmationTest extends BaseTest {
 
     @Test
     @DisplayName("Verify Download Invoice Button download Invoice")
-    @Order(4)
+    @Order(3)
     public void verifyInvoiceDownload() throws InterruptedException {
         // Read user data from auth_data.json
         List<Map<String, Object>> users = JsonUtils.readJsonFile("src/main/resources/data/auth_data.json");
@@ -237,7 +243,7 @@ public class VerifyPaymentConfirmationTest extends BaseTest {
             productsPage.clickAddToCartFilterButton();
 
             // Navigate to cart page
-            cartPage = productsPage.clickAddToCartNavMenu();
+            cartPage = productsPage.clickModalContentViewCartButton();
 
             // Click checkout
             checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
@@ -306,7 +312,7 @@ public class VerifyPaymentConfirmationTest extends BaseTest {
 
     @Test
     @DisplayName("Verify Downloaded Invoice Content")
-    @Order(5)
+    @Order(4)
     public void verifyDownloadedInvoiceContent() throws InterruptedException {
         // Read user data from auth_data.json
         List<Map<String, Object>> users = JsonUtils.readJsonFile("src/main/resources/data/auth_data.json");
@@ -484,7 +490,7 @@ public class VerifyPaymentConfirmationTest extends BaseTest {
 
     @Test
     @DisplayName("Verify Continue reroute to Homepage")
-    @Order(6)
+    @Order(5)
     public void verifyContinueButton(){
         // Navigate to auth page
         authPage = homePage.clickAuthNavigation();
