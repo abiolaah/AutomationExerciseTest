@@ -112,6 +112,10 @@ public class VerifyPaymentTest extends BaseTest {
             // Add a product to the cart and get its details
             productsPage.clickAddToCartFilterButton();
 
+            productsPage.clickModalFooterContinueButton();
+
+            cartPage = productsPage.clickAddToCartNavMenu();
+
             // Click checkout
             checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
         } else {
