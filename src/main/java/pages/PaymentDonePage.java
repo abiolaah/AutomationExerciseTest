@@ -29,13 +29,19 @@ public class PaymentDonePage {
         return sectionTitle.getText();
     }
     // method to get section text
-    public List<String> getSectionText(){
+    public List<String> getSectionParagraphText(){
         List<WebElement> sectionTextElements = driver.findElements(sectionTextElement);
         List<String> text = new ArrayList<>();
         for (WebElement element: sectionTextElements){
             text.add(element.getText().trim());
         }
         return text;
+    }
+
+    // method to get section text
+    public String getSectionText(){
+        WebElement sectionText = driver.findElement(sectionTextElement);
+        return sectionText.getText();
     }
     // method to click download invoice button: triggers download
     public void clickDownloadInvoice(){
