@@ -97,7 +97,7 @@
                 <artifactId>maven-surefire-report-plugin</artifactId>
                 <version>3.5.2</version>
                 <configuration>
-                    <outputDirectory>/docs/reports</outputDirectory>
+                    <outputDirectory>/reports</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>
