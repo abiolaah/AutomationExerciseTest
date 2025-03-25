@@ -6,23 +6,57 @@ The **Automation Exercise Test Automation** project uses Java, Selenium, Maven, 
 ## Purpose
 The primary purpose of this project is to perform end-to-end testing of the Automation Exercise website to verify its functionality and reliability.
 
+## Test Results Summary
+
+Here's a summary of the latest test execution:
+
+| Category         | Tests | Errors | Failures | Skipped | Success Rate | Time     |
+|------------------|-------|--------|----------|---------|--------------|----------|
+| **Total**        | 96    | 12     | 3        | 2       | 82.3%        | 766.0 s  |
+| apiLists         | 2     | 0      | 0        | 0       | 100%         | 9.134 s  |
+| testCases        | 2     | 0      | 0        | 0       | 100%         | 8.324 s  |
+| contact          | 10    | 0      | 0        | 0       | 100%         | 47.98 s  |
+| baseTests        | 2     | 0      | 0        | 2       | 0%           | 0.007 s  |
+| video            | 2     | 0      | 0        | 0       | 100%         | 7.991 s  |
+| checkout         | 28    | 6      | 3        | 0       | 67.9%        | 390.8 s  |
+| authentications  | 13    | 6      | 0        | 0       | 53.8%        | 73.24 s  |
+| products         | 32    | 0      | 0        | 0       | 100%         | 213.0 s  |
+| home             | 5     | 0      | 0        | 0       | 100%         | 15.45 s  |
+
+### Key Findings:
+- 82.3% overall success rate (79 passed out of 96 tests)
+- Main issues in checkout and authentication tests
+- 2 tests were skipped (marked with @Disabled)
+
+### Error Analysis:
+Most errors were `NoSuchElementException`, indicating elements weren't found when expected. This suggests potential timing issues or changes in the application's UI structure.
+
+## Viewing Full Test Report
+To view the complete HTML test report with detailed error information:
+
+1. Run the tests if you haven't already:
+   ```bash
+   mvn test
+2. Open the generated report in your browser:
+      ```bash
+      open target/report/surefire-report.html
+
 ## Core Functionality
-- Test scripts were written to cover **all pages** of the website.
-- Additional tests ensure the functionality and consistency of the **footer section**.
+- Test scripts were written to cover all pages of the website. 
+- Additional tests ensure the functionality and consistency of the footer section.
 
 ## Technologies Used
 The project is built using the following tools and libraries:
-- **Java**: Programming language for the test scripts.
-- **Selenium**: Browser automation framework.
-- **JUnit**: Framework for writing and running test cases.
-- **Maven**: Dependency management and build automation.
-- **WebDriverManager**: Automated management of browser drivers.
-- **JavaFaker**: Generating random test data.
-- **Hamcrest**: Writing expressive test assertions.
-- **Jackson**: Handling JSON data.
-- **Gson**: Gives access to the Gson class, which is a powerful tool for handling JSON serialization and deserialization in Java. In this project, it simplifies reading and writing JSON data, ensuring smooth interaction between JSON files and your Java application.
-
-Dependencies are managed via Maven. The relevant dependencies are specified in the `pom.xml` file (shown below).
+- Java: Programming language for the test scripts. 
+- Selenium: Browser automation framework. 
+- JUnit: Framework for writing and running test cases. 
+- Maven: Dependency management and build automation. 
+- WebDriverManager: Automated management of browser drivers. 
+- JavaFaker: Generating random test data. 
+- Hamcrest: Writing expressive test assertions. 
+- Jackson: Handling JSON data. 
+- Gson: Gives access to the Gson class, which is a powerful tool for handling JSON serialization and deserialization in Java. In this project, it simplifies reading and writing JSON data, ensuring smooth interaction between JSON files and your Java application.
+Dependencies are managed via Maven. The relevant dependencies are specified in the pom.xml file (shown below).
 
 ## Project Setup
 To set up and run the project locally, follow these steps:
@@ -43,7 +77,6 @@ Ensure the following are installed:
 3. Run the tests
    ```bash
    mvn test
-
 
 ## Project Structure
 The repository is organized as follows:
