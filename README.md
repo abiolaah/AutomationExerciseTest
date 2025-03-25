@@ -7,6 +7,8 @@ The **Automation Exercise Test Automation** project uses Java, Selenium, Maven, 
 The primary purpose of this project is to perform end-to-end testing of the Automation Exercise website to verify its functionality and reliability.
 
 ## Test Results Summary
+![Surefire Test Report](src/main/resources/screenshots/surefire-report.png)
+*Generated on 2025-03-25 | Success Rate: 82.3%*
 
 Here's a summary of the latest test execution:
 
@@ -16,7 +18,6 @@ Here's a summary of the latest test execution:
 | apiLists         | 2     | 0      | 0        | 0       | 100%         | 9.134 s  |
 | testCases        | 2     | 0      | 0        | 0       | 100%         | 8.324 s  |
 | contact          | 10    | 0      | 0        | 0       | 100%         | 47.98 s  |
-| baseTests        | 2     | 0      | 0        | 2       | 0%           | 0.007 s  |
 | video            | 2     | 0      | 0        | 0       | 100%         | 7.991 s  |
 | checkout         | 28    | 6      | 3        | 0       | 67.9%        | 390.8 s  |
 | authentications  | 13    | 6      | 0        | 0       | 53.8%        | 73.24 s  |
@@ -26,7 +27,6 @@ Here's a summary of the latest test execution:
 ### Key Findings:
 - 82.3% overall success rate (79 passed out of 96 tests)
 - Main issues in checkout and authentication tests
-- 2 tests were skipped (marked with @Disabled)
 
 ### Error Analysis:
 Most errors were `NoSuchElementException`, indicating elements weren't found when expected. This suggests potential timing issues or changes in the application's UI structure.
@@ -40,6 +40,12 @@ To view the complete HTML test report with detailed error information:
 2. Open the generated report in your browser:
       ```bash
       open target/report/surefire-report.html
+
+## Screenshots
+![Alt Text](src/main/resources/screenshot/Confirm%20All%20Test%20Case%20Title_20250324_201808.png)
+*Figure 1: Screenshot of Test case Page tests*
+![Alt Text](src/main/resources/screenshot/Confirm%20API%20List%20Page%20Header%20Text_20250324_201803.png)
+*Figure 2: Screenshot of API List Page tests*
 
 ## Core Functionality
 - Test scripts were written to cover all pages of the website. 
