@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 
 public class AccountSetUpPage {
     private final WebDriver driver;
+    private final WebDriverWait wait;
+
     private final By sectionTitleElement = By.cssSelector("div.login-form > h2");
     private final By mrTitleRadioButtonElement = By.id("id_gender1");
     private final By mrsTitleRadioButtonElement = By.id("id_gender2");
@@ -40,6 +42,7 @@ public class AccountSetUpPage {
 
     public AccountSetUpPage(WebDriver driver) {
         this.driver = driver;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
     // method to get main section Title
@@ -58,10 +61,12 @@ public class AccountSetUpPage {
     }
     // method to set title radio button value
     public void setMrTitleValue(){
-        driver.findElement(mrTitleRadioButtonElement).click();
+        WebElement mrTitleRadioButton = wait.until(ExpectedConditions.elementToBeClickable(mrTitleRadioButtonElement));
+        mrTitleRadioButton.click();
     }
     public void setMrsTitleValue(){
-        driver.findElement(mrsTitleRadioButtonElement).click();
+        WebElement mrsTitleRadioButton = wait.until(ExpectedConditions.elementToBeClickable(mrTitleRadioButtonElement));
+        mrsTitleRadioButton.click();
     }
 
     public void setTitleValue(String title){

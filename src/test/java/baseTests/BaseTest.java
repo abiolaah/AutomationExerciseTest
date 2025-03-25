@@ -25,7 +25,7 @@ public class BaseTest {
     protected HomePage homePage;
 
     // Define the download path in a platform-agnostic way
-    public final String downloadPath = System.getProperty("user.dir") + File.separator + "downloads";
+    public final String downloadPath = System.getProperty("user.home") + File.separator + "Downloads";
 
     @BeforeAll
         public static void setUp(){
@@ -66,22 +66,34 @@ public class BaseTest {
 
     @AfterEach
     public void tearDown(TestInfo testInfo){
-//        takeScreenshot(testInfo.getDisplayName());
+        takeScreenshot(testInfo.getDisplayName());
         driver.quit();
     }
 
 
     private void takeScreenshot(String testMethodName) {
-        // Capture screenshot and save it in resources/screenshot
-        File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String screenshotName = testMethodName + "_" + timestamp + ".png";
-
         // Define the screenshot folder path
         File screenshotDir = new File("src/main/resources/screenshot");
         if (!screenshotDir.exists()) {
             screenshotDir.mkdirs();
         }
+
+        // Delete any existing screenshots with the same display name
+        File[] existingScreenshots = screenshotDir.listFiles((dir, name) ->
+                name.startsWith(testMethodName + "_") && name.endsWith(".png"));
+
+        if (existingScreenshots != null) {
+            for (File existingFile : existingScreenshots) {
+                if (!existingFile.delete()) {
+                    System.err.println("Failed to delete existing screenshot: " + existingFile.getAbsolutePath());
+                }
+            }
+        }
+
+        // Capture screenshot and save it in resources/screenshot
+        File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String screenshotName = testMethodName + "_" + timestamp + ".png";
 
         // Define the screenshot file path
         File destinationFile = new File(screenshotDir, screenshotName);

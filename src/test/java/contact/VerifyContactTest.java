@@ -62,7 +62,12 @@ public class VerifyContactTest extends BaseTest {
         contactPage.setSubject("Issue with Purchase");
         contactPage.setMessage("No confirmation email was received for order ORD_900");
         contactPage.clickSubmitButton();
-        assertThat("Alert Text should read 'Automation exercise says'", contactPage.getAlertText(), containsStringIgnoringCase("Press OK to proceed"));
+
+        // Handle the alert explicitly before any other operations
+        String alertText = contactPage.getAlertText();
+        contactPage.clickToDismissAlert();
+
+        assertThat("Alert Text should read 'Automation exercise says'", alertText, containsStringIgnoringCase("Press OK to proceed"));
     }
 
     @Test

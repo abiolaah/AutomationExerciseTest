@@ -11,6 +11,8 @@ import java.time.Duration;
 
 public class PaymentDonePage {
     private final WebDriver driver;
+    private final WebDriverWait wait;
+
     private final By sectionTitleElement = By.cssSelector("section#form> div.container > div.row > div > h2 > b");
     private final By sectionTextElement = By.cssSelector("section#form> div.container > div.row > div > p");
     private final By downloadButtonElement = By.cssSelector("section#form> div.container > div.row > div > a");
@@ -19,27 +21,30 @@ public class PaymentDonePage {
 
     public PaymentDonePage(WebDriver driver){
         this.driver = driver;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
     // method to get section Title
     public String getSectionTitle(){
-        WebElement sectionTitle = driver.findElement(sectionTitleElement);
+        WebElement sectionTitle = wait.until(ExpectedConditions.visibilityOfElementLocated(sectionTitleElement));
         return sectionTitle.getText();
     }
 
     // method to get section text
     public String getSectionText(){
-        WebElement sectionText = driver.findElement(sectionTextElement);
+        WebElement sectionText = wait.until(ExpectedConditions.visibilityOfElementLocated(sectionTextElement));
         return sectionText.getText();
     }
     // method to click download invoice button: triggers download
     public void clickDownloadInvoice(){
-        driver.findElement(downloadButtonElement).click();
+        WebElement downloadButton = wait.until(ExpectedConditions.elementToBeClickable(downloadButtonElement));
+        downloadButton.click();
     }
 
     // method to click continue button: this routes back to home page
     public HomePage clickContinueButton(){
-        driver.findElement(continueButtonElement).click();
+        WebElement continueButton = wait.until(ExpectedConditions.elementToBeClickable(continueButtonElement));
+        continueButton.click();
         return new HomePage(driver);
     }
 
