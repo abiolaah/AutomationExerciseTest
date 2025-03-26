@@ -31,6 +31,9 @@ Here's a summary of the latest test execution:
 ### Error Analysis:
 Most errors were `NoSuchElementException`, indicating elements weren't found when expected. This suggests potential timing issues or changes in the application's UI structure.
 
+### Full Test Reports
+[View Latest Test Results](https://abiolaah.github.io/AutomationExerciseTest/)
+
 ## Viewing Full Test Report
 To view the complete HTML test report with detailed error information:
 
