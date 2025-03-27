@@ -1,9 +1,6 @@
 package pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.CartProduct;
@@ -94,7 +91,27 @@ public class CartPage {
     }
 
     public CheckOutPage clickProceedToCheckoutLoggedIn(){
-        driver.findElement(checkoutButton).click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        // Wait for the button to be clickable
+        WebElement checkoutButtonElement = wait.until(ExpectedConditions.elementToBeClickable(checkoutButton));
+
+        // Scroll the element into view
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", checkoutButtonElement);
+
+        // Click with retry logic for staleness
+        int attempts = 0;
+        while (attempts < 2) {
+            try {
+                checkoutButtonElement.click();
+                break;
+            } catch (StaleElementReferenceException e) {
+                // Re-find the element if stale
+                checkoutButtonElement = wait.until(ExpectedConditions.elementToBeClickable(checkoutButton));
+            }
+            attempts++;
+        }
+
         return new CheckOutPage(driver);
     }
 
@@ -207,7 +224,7 @@ public class CartPage {
         modalContinueButton.click();
     }
 
-    //Method to confirm loggged or logout
+    //Method to confirm logged or logout
     public AuthenticationsPage clickLogout(){
         driver.findElement(logoutButton).click();
         return new AuthenticationsPage(driver);
