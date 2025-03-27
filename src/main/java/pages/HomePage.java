@@ -110,19 +110,24 @@ public class HomePage {
 
     // Method to initiate Cart page after login
     public CartPage clickCartNavigationAfterLogin() {
-        int attempts = 0;
-        while (attempts < 3) { // Retry up to 3 times
-            try {
-                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-                WebElement cartLink = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("ul.nav.navbar-nav > li:nth-of-type(3) > a")));
-                cartLink.click();
-                return new CartPage(driver);
-            } catch (StaleElementReferenceException e) {
-                attempts++;
-                System.out.println("StaleElementReferenceException encountered. Retrying... Attempt: " + attempts);
-            }
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        // First wait for the navigation bar to be present
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("ul.nav.navbar-nav")));
+
+        // Then wait for the cart link to be clickable
+        WebElement cartLink = wait.until(ExpectedConditions.elementToBeClickable(
+                By.cssSelector("ul.nav.navbar-nav > li:nth-of-type(3) > a")));
+
+        // Scroll into view and click using JavaScript as fallback
+        try {
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", cartLink);
+            cartLink.click();
+        } catch (ElementClickInterceptedException e) {
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", cartLink);
         }
-        throw new RuntimeException("Failed to click cart navigation link after multiple attempts.");
+
+        return new CartPage(driver);
     }
 
     // Method to initiate Authentication page
