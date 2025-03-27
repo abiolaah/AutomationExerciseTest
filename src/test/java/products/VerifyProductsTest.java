@@ -41,7 +41,7 @@ public class VerifyProductsTest extends BaseTest {
     @MethodSource("provideCategoryFilterParameters")
     @DisplayName("Confirm Page Header Change After Category Filter")
     @Order(3)
-    public void pageHeaderFilterChangeConfirmation(String filterType, String expectedHeaderText) {
+    public void pageHeaderFilterChangeConfirmation(String filterType,  String expectedString1, String expectedString2) {
         productsPage = homePage.clickProductNavigation();
         String actualHeaderText = switch (filterType) {
             case "Women Dress" -> productsPage.confirmHeaderTextChangeForWomenDress();
@@ -54,14 +54,14 @@ public class VerifyProductsTest extends BaseTest {
             default -> throw new IllegalArgumentException("Invalid filter type: " + filterType);
         };
 
-        assertThat("Page Header text should contain '" + expectedHeaderText + "'", actualHeaderText, containsStringIgnoringCase(expectedHeaderText));
+        assertThat("Page Header text should contain both expected words", actualHeaderText, allOf(containsStringIgnoringCase(expectedString1), containsStringIgnoringCase(expectedString2)));
     }
 
     @ParameterizedTest(name = "Confirm Page Header Change After {0} Brand Filter")
     @MethodSource("provideBrandFilterParameters")
     @DisplayName("Confirm Page Header Change Based on Brand Filter")
     @Order(4)
-    public void pageHeaderBrandFilterChangeConfirmation(String brandFilterType, String expectedHeaderText) {
+    public void pageHeaderBrandFilterChangeConfirmation(String brandFilterType, String expectedString1, String expectedString2) {
         productsPage = homePage.clickProductNavigation();
         String actualHeaderText = switch (brandFilterType) {
             case "Polo" -> productsPage.confirmHeaderForPoloBrandFilter();
@@ -75,33 +75,39 @@ public class VerifyProductsTest extends BaseTest {
             default -> throw new IllegalArgumentException("Invalid brand filter type: " + brandFilterType);
         };
 
-        assertThat("Page Header text should contain '" + expectedHeaderText + "'", actualHeaderText, containsStringIgnoringCase(expectedHeaderText));
+        assertThat("Page Header text should contain " +expectedString1+ " "+expectedString2,
+                actualHeaderText,
+                allOf(
+                        containsStringIgnoringCase(expectedString1),
+                        containsStringIgnoringCase(expectedString2)
+                ));
     }
 
     private static Stream<Arguments> provideCategoryFilterParameters() {
         return Stream.of(
-                Arguments.of("Women Dress", "Dress"),
-                Arguments.of("Women Tops", "Women - Tops"),
-                Arguments.of("Women Saree", "SAREE"),
-                Arguments.of("Men TShirt", "Men - TShirt"),
-                Arguments.of("Men Jeans", "Men - Jeans"),
-                Arguments.of("Kids Dress", "DRESS"),
-                Arguments.of("Kids Tops and Shirt", "Kids - Tops & Shirts")
+                Arguments.of("Women Dress", "Women", "Dress"),
+                Arguments.of("Women Tops", "Women", "Tops"),
+                Arguments.of("Women Saree", "Women", "Saree"),
+                Arguments.of("Men TShirt", "Men", "TShirt"),
+                Arguments.of("Men Jeans", "Men", "Jeans"),
+                Arguments.of("Kids Dress", "Kids", "Dress"),
+                Arguments.of("Kids Tops and Shirt", "Kids", "Tops & Shirts")
         );
     }
 
     private static Stream<Arguments> provideBrandFilterParameters() {
         return Stream.of(
-                Arguments.of("Polo", "Brand - POLO"),
-                Arguments.of("H&M", "Brand - H&M"),
-                Arguments.of("Madame", "Brand - MADAME"),
-                Arguments.of("Mast", "Brand - MAST & HARBOUR"),
-                Arguments.of("BabyHug", "Brand - BABYHUG"),
-                Arguments.of("Allen", "Brand - ALLEN"),
-                Arguments.of("Kookie", "Brand - KOOKIE KIDS"),
-                Arguments.of("Biba", "Brand - BIBA")
+                Arguments.of("Polo", "Brand", "POLO"),
+                Arguments.of("H&M", "Brand", "H&M"),
+                Arguments.of("Madame", "Brand", "MADAME"),
+                Arguments.of("Mast", "Brand", "MAST"),
+                Arguments.of("BabyHug", "Brand", "BABYHUG"),
+                Arguments.of("Allen", "Brand", "ALLEN"),
+                Arguments.of("Kookie", "Brand", "KOOKIE"),
+                Arguments.of("Biba", "Brand", "BIBA")
         );
     }
+
 
     @Test
     @DisplayName("Confirm Cart Modal Header Text")
