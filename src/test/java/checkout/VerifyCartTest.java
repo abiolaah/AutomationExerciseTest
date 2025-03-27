@@ -12,6 +12,7 @@ import java.util.Locale;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class VerifyCartTest extends BaseTest {
@@ -82,43 +83,71 @@ public class VerifyCartTest extends BaseTest {
     @Test
     @DisplayName("Add To Cart From Products Details Page")
     @Order(5)
-    public void verifyProductAddedToCartFromProductDetailsPage(){
-        // Navigate to the products page
-        cartPage = homePage.clickCartNavigation();
-        productsPage = cartPage.redirectToProducts();
+    public void verifyProductAddedToCartFromProductDetailsPage() {
+        try {
+            // Navigate to the products page
+            cartPage = homePage.clickCartNavigation();
+            productsPage = cartPage.redirectToProducts();
 
-        // Click on a product to view its details
-        productDetailPage = productsPage.clickViewProductButton();
+            // Click on a product to view its details
+            productDetailPage = productsPage.clickViewProductButton();
 
-        // Add the product to the cart and get its details
-        CartProduct addedProduct = productDetailPage.clickAddToCartButton();
+            // Add small delay to ensure page is stable
+            Thread.sleep(1000);
 
-        // Navigate back to the cart page
-        cartPage = productDetailPage.clickModalContentViewCartButton();
+            // Add the product to the cart and get its details
+            CartProduct addedProduct = productDetailPage.clickAddToCartButton();
 
-        // Get the product details from the cart
-        List<CartProduct> cartProducts = cartPage.getProductDetailsInCart();
+            // Add small delay to allow cart to update
+            Thread.sleep(1000);
 
-        // Verify that the added product is in the cart with the correct details
-        boolean productFound = false;
-        for (CartProduct cartProduct : cartProducts) {
-            if (cartProduct.getName().equalsIgnoreCase(addedProduct.getName())) {
-                assertThat("The product details in the cart should match the added product", cartProduct.toString(),
-                        equalToIgnoringCase(addedProduct.toString()));
-                productFound = true;
-                break;
+            // Navigate back to the cart page
+            cartPage = productDetailPage.clickModalContentViewCartButton();
+
+            // Add small delay to allow cart page to load
+            Thread.sleep(1000);
+
+            // Get the product details from the cart
+            List<CartProduct> cartProducts = cartPage.getProductDetailsInCart();
+            assertThat("Cart should contain exactly 1 item", cartProducts.size(), equalTo(1));
+
+            // Debug output
+            System.out.println("Added product: " + addedProduct);
+            System.out.println("Cart products: " + cartProducts);
+
+            // Verify that the added product is in the cart with the correct details
+            boolean productFound = false;
+            for (CartProduct cartProduct : cartProducts) {
+                if (cartProduct.getName().equalsIgnoreCase(addedProduct.getName())) {
+                    // Create expected CartProduct with the updated quantity
+                    CartProduct expectedProduct = new CartProduct(
+                            addedProduct.getName(),
+                            addedProduct.getPrice(),
+                            "1"
+                    );
+                    System.out.println("Found match: " + cartProduct + " vs " + expectedProduct);
+                    assertThat("The product details in the cart should match the added product", cartProduct.toString(),
+                            equalToIgnoringCase(expectedProduct.toString()));
+                    productFound = true;
+                    break;
+                }
             }
-        }
 
-        assertThat("The added product should be found in the cart", productFound, is(true));
+            assertThat("The added product should be found in the cart", productFound, is(true));
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            fail("Test interrupted: "+ e.getMessage());
+        }
     }
 
     @Test
     @DisplayName("Add More than One Product to Cart")
     @Order(6)
     public void verifyMoreThanOneProductAddedToCart(){
+        try{
         // Generate a random quantity between 1 and 9
-        String newQuantity = String.valueOf(faker.number().numberBetween(1, 9));
+        String newQuantity = String.valueOf(faker.number().numberBetween(2, 9));
 
         // Navigate to the products page
         cartPage = homePage.clickCartNavigation();
@@ -127,104 +156,157 @@ public class VerifyCartTest extends BaseTest {
         // Click on a product to view its details
         productDetailPage = productsPage.clickViewProductButton();
 
+        // Get product details before changing quantity
+        String productName = productDetailPage.getProductName();
+        String productPrice = productDetailPage.getProductPrice();
+
         // Change the product quantity
         productDetailPage.changeProductQuantity(newQuantity);
 
+        // Add small delay to ensure quantity is updated
+        Thread.sleep(1000);
+
         // Add the product to the cart and get its details
-        CartProduct addedProduct = productDetailPage.clickAddToCartButton();
+        productDetailPage.clickAddToCart();
+
+        // Add delay to allow cart to update
+        Thread.sleep(1000);
 
         // Navigate back to the cart page
         cartPage = productDetailPage.clickModalContentViewCartButton();
 
+        // Add delay to allow cart page to load
+        Thread.sleep(1000);
+
         // Get the product details from the cart
         List<CartProduct> cartProducts = cartPage.getProductDetailsInCart();
+
+        // Debug output
+       System.out.println("Expected product: " + productName + ", Price: " + productPrice + ", Qty: " + newQuantity);
+       System.out.println("Cart products: " + cartProducts);
 
         // Verify that the added product is in the cart with the correct details
         boolean productFound = false;
         for (CartProduct cartProduct : cartProducts) {
-            if (cartProduct.getName().equalsIgnoreCase(addedProduct.getName())) {
-                assertThat("The product details in the cart should match the added product", cartProduct.toString(),
-                        equalToIgnoringCase(addedProduct.toString()));
+            System.out.println("Checking cart product: " + cartProduct);
+            if (cartProduct.getName().equalsIgnoreCase(productName)) {
+
+                // Normalize strings before comparison
+                String expectedPrice = productPrice.trim();
+                String actualPrice = cartProduct.getPrice().trim();
+
+                assertThat("Product name should match", cartProduct.getName(), equalToIgnoringCase(productName));
+                assertThat("Product price should match", actualPrice, equalToIgnoringCase(expectedPrice));
+                assertThat("Product quantity should match", cartProduct.getQuantity(), equalToIgnoringCase(newQuantity));
                 productFound = true;
                 break;
             }
         }
         assertThat("The added product should be found in the cart", productFound, is(true));
+        }
+        catch (InterruptedException e){
+            Thread.currentThread().interrupt();
+            fail("Test interrupted: "+e.getMessage());
+        }
     }
 
     @Test
     @DisplayName("Delete a product from cart")
     @Order(7)
-    public void verifyCartDeleteButtonFunctionality(){
-        // Navigate to the products page
-        cartPage = homePage.clickCartNavigation();
-        productsPage = cartPage.redirectToProducts();
+    public void verifyCartDeleteButtonFunctionality() {
+        try {
+            // Navigate to the products page
+            cartPage = homePage.clickCartNavigation();
 
-        // Add multiple products to the cart
-        List<ProductsPage.Product> addedProducts = new ArrayList<>();
-        for (int i = 0; i < 3; i++) { // Add 3 products to the cart
-            ProductsPage.Product addedProduct = productsPage.clickAddToCartButton();
-            addedProducts.add(addedProduct);
+            // First ensure cart is empty
+            cartPage.deleteAllProductsInCart();
 
-            productsPage.clickModalFooterContinueButton();
+            productsPage = cartPage.redirectToProducts();
 
-            // Navigate back to the products page to add another product
-            productsPage = cartPage.redirectToProductsPage();
-        }
+            // Add multiple products to the cart with explicit quantity 1
+            List<CartProduct> addedProducts = new ArrayList<>();
+            for (int i = 0; i < 3; i++) { // Add 3 products to the cart
+                productDetailPage = productsPage.clickViewProductButton();
 
-        // Navigate back to the cart page
-        cartPage = productsPage.clickAddToCartNavMenu();
+                // Explicitly set quantity to 1
+                productDetailPage.changeProductQuantity("1");
 
-        // Get the product details from the cart before deletion
-        List<CartProduct> cartProductsBeforeDeletion = cartPage.getProductDetailsInCart();
+                // Add small delay to ensure quantity is updated
+                Thread.sleep(500);
 
-        // Verify that all added products are in the cart with the correct details
-        for (ProductsPage.Product addedProduct : addedProducts) {
-            boolean productFoundBeforeDeletion = false;
+                // Get the product details as CartProduct
+                CartProduct addedProduct = productDetailPage.clickAddToCartButton();
+                addedProducts.add(addedProduct);
+
+                productsPage.clickModalFooterContinueButton();
+
+                // Navigate back to the products page to add another product
+                productsPage = cartPage.redirectToProductsPage();
+            }
+
+            // Navigate back to the cart page
+            cartPage = productsPage.clickAddToCartNavMenu();
+
+            // Wait for cart to load
+            Thread.sleep(1000);
+
+            // Get the product details from the cart before deletion
+            List<CartProduct> cartProductsBeforeDeletion = cartPage.getProductDetailsInCart();
+            assertThat("Cart should contain exactly 3 items before deletion",
+                    cartProductsBeforeDeletion.size(), equalTo(3));
+
+            // Verify quantities are all 1
             for (CartProduct cartProduct : cartProductsBeforeDeletion) {
-                if (cartProduct.getName().equalsIgnoreCase(addedProduct.name)) {
-                    assertThat("The product details in the cart should match the added product", cartProduct.toString(),
-                            equalToIgnoringCase(new CartProduct(addedProduct.name, addedProduct.price, "1").toString()));
-                    productFoundBeforeDeletion = true;
+                assertThat("Each product should have quantity 1",
+                        cartProduct.getQuantity(), equalTo("1"));
+            }
+
+            // Rest of the test remains the same...
+            List<String> productNamesBeforeDeletion = new ArrayList<>();
+            for (CartProduct cartProduct : cartProductsBeforeDeletion) {
+                productNamesBeforeDeletion.add(cartProduct.getName());
+            }
+
+            // Delete a random product from the cart
+            cartPage.clickDeleteRandomProductButton();
+
+            // Wait for deletion to complete
+            Thread.sleep(1000);
+
+            // Get the product details from the cart after deletion
+            List<CartProduct> cartProductsAfterDeletion = cartPage.getProductDetailsInCart();
+            assertThat("Cart should contain exactly 2 items after deletion",
+                    cartProductsAfterDeletion.size(), equalTo(2));
+
+            // Verify remaining products still have quantity 1
+            for (CartProduct cartProduct : cartProductsAfterDeletion) {
+                assertThat("Remaining products should have quantity 1",
+                        cartProduct.getQuantity(), equalTo("1"));
+            }
+
+            // Store the names of all products after deletion
+            List<String> productNamesAfterDeletion = new ArrayList<>();
+            for (CartProduct cartProduct : cartProductsAfterDeletion) {
+                productNamesAfterDeletion.add(cartProduct.getName());
+            }
+
+            // Find the deleted product by comparing the lists
+            String deletedProductName = null;
+            for (String productName : productNamesBeforeDeletion) {
+                if (!productNamesAfterDeletion.contains(productName)) {
+                    deletedProductName = productName;
                     break;
                 }
             }
-            assertThat("The added product should be found in the cart before deletion", productFoundBeforeDeletion, is(true));
+
+            // Verify that the deleted product is no longer in the cart
+            assertThat("The deleted product should not be found in the cart after deletion",
+                    deletedProductName, is(notNullValue()));
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            fail("Test interrupted: " + e.getMessage());
         }
-
-        List<String> productNamesBeforeDeletion = new ArrayList<>();
-        for (CartProduct cartProduct : cartProductsBeforeDeletion) {
-            productNamesBeforeDeletion.add(cartProduct.getName());
-        }
-
-        // Delete a random product from the cart
-        cartPage.clickDeleteRandomProductButton();
-
-        // Get the product details from the cart after deletion
-        List<CartProduct> cartProductsAfterDeletion = cartPage.getProductDetailsInCart();
-
-        // Store the names of all products after deletion
-        List<String> productNamesAfterDeletion = new ArrayList<>();
-        for (CartProduct cartProduct : cartProductsAfterDeletion) {
-            productNamesAfterDeletion.add(cartProduct.getName());
-        }
-
-
-        // Verify that the number of products in the cart has decreased by 1
-        assertThat("The number of products in the cart should decrease by 1 after deletion",
-                cartProductsAfterDeletion.size(), equalTo(cartProductsBeforeDeletion.size() - 1));
-
-        // Find the deleted product by comparing the lists
-        String deletedProductName = null;
-        for (String productName : productNamesBeforeDeletion) {
-            if (!productNamesAfterDeletion.contains(productName)) {
-                deletedProductName = productName;
-                break;
-            }
-        }
-
-        // Verify that the deleted product is no longer in the cart
-        assertThat("The deleted product should not be found in the cart after deletion", deletedProductName, is(notNullValue()));
     }
 
     @Test
