@@ -30,11 +30,25 @@ public class VerifyAccountCreatedTest extends BaseTest {
     @Order(1)
     public void verifyAccountCreatedSectionText() throws IOException {
         // Generate random data
-        String firstName = faker.name().firstName();
-        String lastName = faker.name().lastName();
+        String firstName, lastName, email;
+
+        int attempts = 0;
+        int maxAttempts = 10;
+
+        do{
+            firstName = faker.name().firstName();
+            lastName = faker.name().lastName();
+            email = faker.internet().emailAddress();
+
+            attempts++;
+
+            if (attempts >= maxAttempts){
+                throw new RuntimeException("Failed to generate unique user data after "+maxAttempts+ " attempts");
+            }
+        } while (RegistrationUtils.isEmailExists(email) || RegistrationUtils.isNameExists(firstName, lastName));
+
         String name = firstName + " " +lastName;
         String company = faker.company().name();
-        String email = faker.internet().emailAddress();
         String title = faker.bool().bool() ? "Mr": "Mrs";
         String password = faker.internet().password(8, 16);
         String day = String.valueOf(faker.number().numberBetween(1, 28));
@@ -86,22 +100,44 @@ public class VerifyAccountCreatedTest extends BaseTest {
         setUpPage.setCountryValue("Canada");
 
         accountCreatedPage = setUpPage.clickCreateButton();
-        assertThat("Account created successfully", accountCreatedPage.getSectionParagraphText(), containsStringIgnoringCase("Congratulations"));
 
         // Save the registration data to data/auth_data.json
+        try {
         RegistrationUtils.saveRegistrationData(registrationData);
+        } catch (IllegalArgumentException e) {
+            verifyAccountCreatedSectionText();
+            return;
+        }
+        assertThat("Account created successfully", accountCreatedPage.getSectionParagraphText(), containsStringIgnoringCase("Congratulations"));
     }
 
     @Test
     @DisplayName("Verify ReRouting to Homepage")
     @Order(2)
     public void verifyContinueButtonFunction() throws IOException {
+
         // Generate random data
-        String name = faker.name().fullName();
-        String firstName = name.split(" ")[0];
-        String lastName = name.split(" ")[1];
+        String firstName, lastName, email;
+
+        int attempts = 0;
+        int maxAttempts = 10;
+
+        do{
+            firstName = faker.name().firstName();
+            lastName = faker.name().lastName();
+            email = faker.internet().emailAddress();
+
+            attempts++;
+
+            if (attempts >= maxAttempts){
+                throw new RuntimeException("Failed to generate unique user data after "+maxAttempts+ " attempts");
+            }
+        } while (RegistrationUtils.isEmailExists(email) || RegistrationUtils.isNameExists(firstName, lastName));
+
+
+        // Generate rest of the  random data
+        String name = firstName + " " +lastName;
         String company = faker.company().name();
-        String email = faker.internet().emailAddress();
         String title = faker.bool().bool() ? "Mr": "Mrs";
         String password = faker.internet().password(8, 16);
         String day = String.valueOf(faker.number().numberBetween(1, 28));
@@ -151,8 +187,14 @@ public class VerifyAccountCreatedTest extends BaseTest {
         setUpPage.setCountryValue("Canada");
 
         accountCreatedPage = setUpPage.clickCreateButton();
+        try {
         // Save the registration data to auth_data.json
         RegistrationUtils.saveRegistrationData(registrationData);
+        }
+        catch (IllegalArgumentException e) {
+            verifyContinueButtonFunction();
+            return;
+        }
         homePage = accountCreatedPage.clickContinueButton();
         String homePageHeader = homePage.pageHeaderTextValue();
         assertThat("Routed to home page", homePageHeader, containsStringIgnoringCase("AutomationExercise"));
