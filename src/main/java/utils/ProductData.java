@@ -38,8 +38,8 @@ public class ProductData {
         ProductData that = (ProductData) o;
         return quantity == that.quantity &&
                 Double.compare(that.total, total) == 0 &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(price, that.price);
+                name.trim().equalsIgnoreCase(that.name.trim()) &&
+                price.trim().equalsIgnoreCase(that.price.trim());
     }
 
     @Override
