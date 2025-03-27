@@ -3,10 +3,15 @@ package contact;
 import baseTests.BaseTest;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.ContactUsPage;
+
+import java.time.Duration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class VerifyContactTest extends BaseTest {
@@ -117,14 +122,29 @@ public class VerifyContactTest extends BaseTest {
     @DisplayName("Verify Home Button works")
     @Order(10)
     public void verifyHomeButtonFunctionality(){
-        contactPage = homePage.clickContactUsNavigation();
-        contactPage.setName(faker.name().fullName());
-        contactPage.setEmail(faker.internet().emailAddress());
-        contactPage.setSubject("Issue with Purchase");
-        contactPage.setMessage("No confirmation email was received for order ORD_900");
-        contactPage.clickSubmitButton();
-        contactPage.clickToAcceptAlert();
-        homePage = contactPage.clickHomeButton();
-        assertThat("Routed to home page", homePage.pageHeaderTextValue(), containsStringIgnoringCase("AutomationExercise"));
+        try{
+            contactPage = homePage.clickContactUsNavigation();
+            contactPage.setName(faker.name().fullName());
+            contactPage.setEmail(faker.internet().emailAddress());
+            contactPage.setSubject("Issue with Purchase");
+            contactPage.setMessage("No confirmation email was received for order ORD_900");
+            contactPage.clickSubmitButton();
+            contactPage.clickToAcceptAlert();
+
+            // Click home button and wait for page to load
+            homePage = contactPage.clickHomeButton();
+
+            // Add explicit wait for the home page to load
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.titleContains("Automation")); // Wait for title to contain "Automation"
+
+            // Verify the page header
+            String headerText = homePage.pageHeaderTextValue();
+
+            assertThat("Routed to home page", headerText, containsStringIgnoringCase("AutomationExercise"));
+        }
+        catch (Exception e){
+            fail("Test failed due to: "+e.getMessage());
+        }
     }
 }
