@@ -40,18 +40,29 @@ public class VerifyPaymentTest extends BaseTest {
         homePage = authPage.clickLogin();
 
         //Navigate to cart page from homepage
-        cartPage = homePage.clickCartNavigation();
+        cartPage = homePage.clickCartNavigationAfterLogin();
 
-        //Navigate to product page from cart page
-        productsPage = cartPage.redirectToProductsPage();
+        // Check if cart is empty
+        String emptyCartText = cartPage.getEmptyCartText();;
+        if (emptyCartText.contains("Cart is empty!")){
+            // If cart is empty, redirect to products page
+            productsPage = cartPage.redirectToProducts();
 
-        // Add a product to the cart
-        productsPage.clickAddToCartFilterButton();
+            // Add a product to the cart
+            productsPage.clickAddToCartFilterButton();
 
-        // Navigate back to cart page
-        cartPage = productsPage.clickModalContentViewCartButton();
+            productsPage.clickModalFooterContinueButton();
 
-        checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+            cartPage = productsPage.clickAddToCartNavMenu();
+
+            // Click checkout
+            checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+        }
+        else {
+            // If cart is not empty, proceed to checkout
+            checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
+        }
+
         paymentPage = checkOutPage.clickPlaceOrderButton();
 
         // Click submit button and verify the success message
@@ -118,7 +129,8 @@ public class VerifyPaymentTest extends BaseTest {
 
             // Click checkout
             checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
-        } else {
+        }
+        else {
             // If cart is not empty, proceed to checkout
             checkOutPage = cartPage.clickProceedToCheckoutLoggedIn();
         }
