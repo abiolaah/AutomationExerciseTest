@@ -340,6 +340,17 @@ public class ProductsPage {
 
         // Click the button
         randomAddToCartButton.click();
+
+        // Wait for cart modal to appear (important addition)
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector(".modal-content")));
+
+        // Optional: Add small delay to ensure modal is fully loaded
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     public Product clickAddToCartButton(){
@@ -372,6 +383,10 @@ public class ProductsPage {
 
         // Click the button
         randomAddToCartButton.click();
+
+        // Wait for cart modal to appear
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector(".modal-content")));
 
         // Return selected product object
         return selectedProduct;
