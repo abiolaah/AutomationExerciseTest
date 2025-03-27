@@ -36,7 +36,9 @@ public class VerifyAccountSetUpTest extends BaseTest {
         registerPage.setRegisterNameElement(name);
         setUpPage= registerPage.clickRegister();
 
-        assertThat("The page header should contains 'Enter Account Information'", setUpPage.getSectionTitle(), containsStringIgnoringCase("Account Information"));
+        String sectionHeader = setUpPage.getSectionTitle();
+
+        assertThat("The page header should contains 'Enter Account Information'", sectionHeader, containsStringIgnoringCase("Account Information"));
     }
 
     @Test
