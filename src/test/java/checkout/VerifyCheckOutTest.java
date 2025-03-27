@@ -5,17 +5,22 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.*;
 import utils.CartProduct;
 import utils.JsonUtils;
 import utils.ProductData;
 import utils.UserData;
 
+import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class VerifyCheckOutTest extends BaseTest {
@@ -358,6 +363,10 @@ public class VerifyCheckOutTest extends BaseTest {
         // Navigate to homepage from auth page
         homePage = authPage.clickLogin();
 
+        // After login, wait for homepage to load
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        wait.until(ExpectedConditions.titleContains("Automation")); // Adjust to match your page title
+
         // Navigate to cart page from homepage
         cartPage = homePage.clickCartNavigationAfterLogin();
 
@@ -407,25 +416,38 @@ public class VerifyCheckOutTest extends BaseTest {
 
         // Verify the products in the order section
         for (int i = 0; i < productNames.size(); i++) {
+            String orderProductName = productNames.get(i).trim();
+            String orderProductPrice = productPrices.get(i).trim();
+            int orderProductQuantity = Integer.parseInt(productQuantities.get(i).trim());
+            double orderProductTotal = Double.parseDouble(productTotalPrices.get(i).replace("Rs. ", "").trim());
+
+
+            // Create order product for comparison
             ProductData orderProduct = new ProductData(
-                    productNames.get(i),
-                    productPrices.get(i),
-                    Integer.parseInt(productQuantities.get(i)),
-                    Double.parseDouble(productTotalPrices.get(i).replace("Rs. ", ""))
+                    orderProductName, orderProductPrice, orderProductQuantity, orderProductTotal
             );
 
-            // Find the corresponding added product
-            ProductData addedProduct = addedProducts.stream()
-                    .filter(p -> p.equals(orderProduct))
-                    .findFirst()
-                    .orElseThrow(() -> new AssertionError("Product not found in added products: " + orderProduct.getName()));
+            // Find matching product with tolerance for floating point totals
+            boolean found = addedProducts.stream().anyMatch(added ->
+                    added.getName().equalsIgnoreCase(orderProduct.getName()) &&
+                            added.getPrice().equalsIgnoreCase(orderProduct.getPrice()) &&
+                            added.getQuantity() == orderProduct.getQuantity() &&
+                            Math.abs(added.getTotal() - orderProduct.getTotal()) < 0.01
+            );
 
-            // Assert that the product details match
-            assertThat("The product details in the order section should match the added product",
-                    orderProduct, equalTo(addedProduct));
-            System.out.println("Assertion Done");
+            assertTrue(found, String.format(
+                    "Product not found in added products:%n" +
+                            "Order Product: %s | %s | %d | %.2f%n" +
+                            "Added Products:%n%s",
+                    orderProductName, orderProductPrice, orderProductQuantity, orderProductTotal,
+                    addedProducts.stream()
+                            .map(p -> String.format(" - %s | %s | %d | %.2f",
+                                    p.getName(), p.getPrice(), p.getQuantity(), p.getTotal()))
+                            .collect(Collectors.joining("\n"))
+            ));
         }
-        // Ensure the logout button is visible before clicking it
+
+            // Ensure the logout button is visible before clicking it
         if (checkOutPage.isLogoutButtonVisible()) {
             checkOutPage.clickLogout();
             System.out.println("Logout Done");
