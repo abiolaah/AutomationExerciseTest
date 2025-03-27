@@ -183,14 +183,16 @@ public class CheckOutPage {
     }
     // method to click place order
     public PaymentPage clickPlaceOrderButton(){
-        WebElement placeOrderButton = driver.findElement(placeOrderButtonElement);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        // Scroll to and wait for button to be clickable
+        WebElement placeOrderButton = wait.until(ExpectedConditions.elementToBeClickable(placeOrderButtonElement));
+
         // Scroll the element into view
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", placeOrderButton);
 
-        // Wait for the element to be clickable
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.elementToBeClickable(placeOrderButton));
         placeOrderButton.click();
+
         return new PaymentPage(driver);
     }
 
