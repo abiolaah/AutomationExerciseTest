@@ -47,7 +47,8 @@ public class AccountSetUpPage {
 
     // method to get main section Title
     public String getSectionTitle(){
-        return driver.findElement(sectionTitleElement).getText();
+        WebElement titleElement = wait.until(ExpectedConditions.visibilityOfElementLocated(sectionTitleElement));
+        return titleElement.getText();
     }
     // method to verify value in Name
     public String getNameValue(){
@@ -172,7 +173,21 @@ public class AccountSetUpPage {
     }
     // method to click create button
     public AccountCreatedPage clickCreateButton(){
-        driver.findElement(createButtonElement).click();
+        WebElement createButton = wait.until(ExpectedConditions.elementToBeClickable(createButtonElement));
+
+        // Scroll the button into view
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", createButton);
+
+        // Wait briefly to ensure scrolling completes
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        // Click using JavaScript to avoid element interception
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", createButton);
+
         return new AccountCreatedPage(driver);
     }
 
