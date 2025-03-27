@@ -72,6 +72,9 @@ public class AuthenticationsPage {
     // method to click signup button: this routes to signup page
     public AccountSetUpPage clickRegister(){
         driver.findElement(registerButtonElement).click();
+        // Wait for new page to load
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.urlContains("signup")); // adjust URL fragment as needed
         return new AccountSetUpPage(driver);
     }
 
