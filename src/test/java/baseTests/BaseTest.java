@@ -66,7 +66,7 @@ public class BaseTest {
 
     @AfterEach
     public void tearDown(TestInfo testInfo){
-        takeScreenshot(testInfo.getDisplayName());
+//        takeScreenshot(testInfo.getDisplayName());
         driver.quit();
     }
 
@@ -78,9 +78,14 @@ public class BaseTest {
             screenshotDir.mkdirs();
         }
 
+        // Clean up the test method name
+        String cleanName = testMethodName.toLowerCase()
+                .replaceAll("\\s+", "_")  // Replace whitespace with underscore
+                .replaceAll("[^a-z0-9_]", "");  // Remove special characters
+
         // Delete any existing screenshots with the same display name
         File[] existingScreenshots = screenshotDir.listFiles((dir, name) ->
-                name.startsWith(testMethodName + "_") && name.endsWith(".png"));
+                name.startsWith(cleanName) && name.endsWith(".png"));
 
         if (existingScreenshots != null) {
             for (File existingFile : existingScreenshots) {
@@ -92,8 +97,7 @@ public class BaseTest {
 
         // Capture screenshot and save it in resources/screenshot
         File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String screenshotName = testMethodName + "_" + timestamp + ".png";
+        String screenshotName = cleanName + ".png";
 
         // Define the screenshot file path
         File destinationFile = new File(screenshotDir, screenshotName);

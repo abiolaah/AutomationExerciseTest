@@ -17,7 +17,7 @@ public class HomePage {
     private final By footerFormButton = By.id("subscribe");
     private final By footerSuccessMessage = By.id("success-subscribe");
     private final By loginText = By.cssSelector("ul.nav.navbar-nav > li:nth-of-type(10) > a\n");
-    private final By logoutButton = By.cssSelector("a[href=\"/logout\"]");
+    public final By logoutButton = By.cssSelector("a[href=\"/logout\"]");
     private final By deleteAccountButton = By.cssSelector("a[href=\"/delete_account\"]");
 
 
@@ -52,10 +52,12 @@ public class HomePage {
 
     //Method to confirm loggged or logout
     public AuthenticationsPage clickLogout(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(logoutButton)));
         driver.findElement(logoutButton).click();
         return new AuthenticationsPage(driver);
     }
-    //Method to confirm loggged or logout
+    //Method to confirm logged or logout
     public DeleteAccountPage clickDeleteAccount(){
         driver.findElement(deleteAccountButton).click();
         return new DeleteAccountPage(driver);
@@ -96,7 +98,18 @@ public class HomePage {
 
     // Method to initiate Products page
     public ProductsPage clickProductNavigation(){
-        clickLink("a[href=\"/products\"]");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        try {
+            // First try normal click
+            WebElement productsLink = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("a[href=\"/products\"]")));
+            productsLink.click();
+        } catch (StaleElementReferenceException e) {
+            // If stale, find element again and click with JavaScript
+            WebElement productsLink = wait.until(ExpectedConditions.presenceOfElementLocated(
+                    By.cssSelector("a[href=\"/products\"]")));
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", productsLink);
+        }
         return new ProductsPage(driver);
     }
 
@@ -176,5 +189,11 @@ public class HomePage {
     // helper method to related with navbar menu
     private void clickLink(String linkText){
         driver.findElement(By.cssSelector(linkText)).click();
+    }
+
+    private void waitForPageToLoad() {
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(
+                webDriver -> ((JavascriptExecutor) webDriver).executeScript(
+                        "return document.readyState").equals("complete"));
     }
 }

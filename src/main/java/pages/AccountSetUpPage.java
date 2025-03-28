@@ -66,7 +66,7 @@ public class AccountSetUpPage {
         mrTitleRadioButton.click();
     }
     public void setMrsTitleValue(){
-        WebElement mrsTitleRadioButton = wait.until(ExpectedConditions.elementToBeClickable(mrTitleRadioButtonElement));
+        WebElement mrsTitleRadioButton = wait.until(ExpectedConditions.elementToBeClickable(mrsTitleRadioButtonElement));
         mrsTitleRadioButton.click();
     }
 
