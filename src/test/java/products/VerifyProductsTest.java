@@ -54,6 +54,11 @@ public class VerifyProductsTest extends BaseTest {
             default -> throw new IllegalArgumentException("Invalid filter type: " + filterType);
         };
 
+        // Debug logging
+        System.out.println("Filter Type: " + filterType);
+        System.out.println("Actual Header: " + actualHeaderText);
+        System.out.println("Expected Strings: " + expectedString1 + ", " + expectedString2);
+
         assertThat("Page Header text should contain both expected words", actualHeaderText, allOf(containsStringIgnoringCase(expectedString1), containsStringIgnoringCase(expectedString2)));
     }
 

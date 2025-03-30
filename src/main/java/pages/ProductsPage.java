@@ -142,8 +142,9 @@ public class ProductsPage {
 
 
     public String confirmHeaderTextForWomenTops(){
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
+        try{
         // Scroll into view and ensure the button is clickable
         WebElement filterButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href=\"#Women\"]")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", filterButton);
@@ -151,11 +152,16 @@ public class ProductsPage {
 
         // Click the dress filter button
         WebElement topButton = wait.until(ExpectedConditions.elementToBeClickable(womenTopsCategoryFilterButton));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", topButton);
         topButton.click();
 
         // Wait for the header to be present and get its text
         WebElement pageHeaderElement = wait.until(ExpectedConditions.presenceOfElementLocated(itemSectionHeaderText));
         return pageHeaderElement.getText();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to confirm header text for Women Tops: " + e.getMessage(), e);
+        }
+
     }
 
     public String confirmHeaderTextForWomenSaree(){

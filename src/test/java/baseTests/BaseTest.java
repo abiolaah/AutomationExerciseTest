@@ -6,8 +6,6 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 import org.openqa.selenium.chrome.ChromeOptions;
 import pages.HomePage;
@@ -15,10 +13,7 @@ import pages.HomePage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 public class BaseTest {
     public WebDriver driver;
@@ -29,7 +24,7 @@ public class BaseTest {
 
     @BeforeAll
         public static void setUp(){
-            // use WebDriverManager a java library dependency to manage the drivers required by Selenium webdriver
+            // use WebDriverManager a java library dependency to manage the drivers required by Selenium web driver
             WebDriverManager.chromedriver().setup();
         }
 
@@ -61,12 +56,12 @@ public class BaseTest {
             driver.manage().window().maximize();
 
             //Load the home page
-            homePage = new HomePage(driver);;
+            homePage = new HomePage(driver);
     }
 
     @AfterEach
     public void tearDown(TestInfo testInfo){
-//        takeScreenshot(testInfo.getDisplayName());
+        takeScreenshot(testInfo.getDisplayName());
         driver.quit();
     }
 

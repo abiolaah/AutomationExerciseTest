@@ -89,6 +89,7 @@
                 <version>3.2.3</version>
                 <configuration>
                     <includes>**/*Test*.java</includes>
+                    <excludes>DownloadBaseTest.java</excludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -96,7 +97,7 @@
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.12.1</version>
                 <configuration>
-                    <outputDirectory>${project.build.directory}/site</outputDirectory>
+                    <outputDirectory>${project.build.directory}/reports</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>
@@ -110,7 +111,7 @@
                 <artifactId>maven-surefire-report-plugin</artifactId>
                 <version>3.5.2</version>
                 <configuration>
-                    <outputDirectory>${project.build.directory}/site</outputDirectory>
+                    <outputDirectory>${project.build.directory}/reports</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>

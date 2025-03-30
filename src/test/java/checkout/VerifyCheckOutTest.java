@@ -5,6 +5,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.*;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.*;
@@ -15,6 +16,7 @@ import utils.UserData;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -143,6 +145,7 @@ public class VerifyCheckOutTest extends BaseTest {
         );
 
         // Navigate to auth page
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         authPage = homePage.clickAuthNavigation();
 
         //set login email
@@ -151,10 +154,10 @@ public class VerifyCheckOutTest extends BaseTest {
         authPage.setLoginPasswordElement((String) randomUser.get("password"));
 
         //Navigate to homepage from auth page
-        homePage = authPage.clickLogin();
+        homePage = retryOnStale(() -> authPage.clickLogin());
 
         //Navigate to cart page from homepage
-        cartPage = homePage.clickCartNavigationAfterLogin();
+        cartPage = retryOnStale(() -> homePage.clickCartNavigationAfterLogin());
 
         // Check if the cart is empty
         String emptyCartText = cartPage.getEmptyCartText();
@@ -414,6 +417,9 @@ public class VerifyCheckOutTest extends BaseTest {
         List<String> productQuantities = checkOutPage.getProductQuantity();
         List<String> productTotalPrices = checkOutPage.getProductTotalPrice();
 
+        // Create a copy of added products to track matches
+        List<ProductData> remainingProducts = new ArrayList<>(addedProducts);
+
         // Verify the products in the order section
         for (int i = 0; i < productNames.size(); i++) {
             String orderProductName = productNames.get(i).trim();
@@ -427,27 +433,37 @@ public class VerifyCheckOutTest extends BaseTest {
                     orderProductName, orderProductPrice, orderProductQuantity, orderProductTotal
             );
 
-            // Find matching product with tolerance for floating point totals
-            boolean found = addedProducts.stream().anyMatch(added ->
-                    added.getName().equalsIgnoreCase(orderProduct.getName()) &&
-                            added.getPrice().equalsIgnoreCase(orderProduct.getPrice()) &&
-                            added.getQuantity() == orderProduct.getQuantity() &&
-                            Math.abs(added.getTotal() - orderProduct.getTotal()) < 0.01
-            );
+            // Find matching product in remainingProducts
+            boolean found = false;
+            for (Iterator<ProductData> iterator = remainingProducts.iterator(); iterator.hasNext();) {
+                ProductData added = iterator.next();
+                if (added.getName().equalsIgnoreCase(orderProduct.getName()) &&
+                        added.getPrice().equalsIgnoreCase(orderProduct.getPrice()) &&
+                        added.getQuantity() == orderProduct.getQuantity() &&
+                        Math.abs(added.getTotal() - orderProduct.getTotal()) < 0.01) {
+
+                    iterator.remove();
+                    found = true;
+                    break;
+                }
+            }
 
             assertTrue(found, String.format(
                     "Product not found in added products:%n" +
                             "Order Product: %s | %s | %d | %.2f%n" +
-                            "Added Products:%n%s",
+                            "Remaining Added Products:%n%s",
                     orderProductName, orderProductPrice, orderProductQuantity, orderProductTotal,
-                    addedProducts.stream()
+                    remainingProducts.stream()
                             .map(p -> String.format(" - %s | %s | %d | %.2f",
                                     p.getName(), p.getPrice(), p.getQuantity(), p.getTotal()))
                             .collect(Collectors.joining("\n"))
             ));
         }
 
-            // Ensure the logout button is visible before clicking it
+        // Ensure all products were matched
+        assertTrue(remainingProducts.isEmpty(), "Not all added products were found in the order section");
+
+        // Ensure the logout button is visible before clicking it
         if (checkOutPage.isLogoutButtonVisible()) {
             checkOutPage.clickLogout();
             System.out.println("Logout Done");
@@ -600,5 +616,19 @@ public class VerifyCheckOutTest extends BaseTest {
                         .appendValue(actualUserData);
             }
         };
+    }
+
+    private <T> T retryOnStale(Supplier<T> action) {
+        int attempts = 0;
+        while (attempts < 3) {
+            try {
+                return action.get();
+            } catch (StaleElementReferenceException e) {
+                attempts++;
+                if (attempts >= 3) throw e;
+                try { Thread.sleep(1000); } catch (InterruptedException ie) { Thread.currentThread().interrupt(); }
+            }
+        }
+        throw new RuntimeException("Failed after retries");
     }
 }

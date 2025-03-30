@@ -83,26 +83,85 @@ AutomationExerciseTest/
 ```
 ## Test Results
 
-### Latest Maven Report
+### Third Maven Report
+[Third Maven Run Report Summary](https://abiolaah.github.io/AutomationExerciseTest/mvn-reports/second-surefire.html)
+![Third MVN Run](src/main/resources/screenshots/surefire-report-2.png)
+*Third execution report from MVN Command Line*
+**Statistics:**
+- **Total Tests:** 96
+- **Success Rate:** 96.9%
+- **Execution Time:** 800.5s
+
+| Category        | Tests | Errors | Failures | Skipped | Success Rate | Time    |
+|-----------------|-------|--------|----------|---------|--------------|---------|
+| **Total**       | 96    | 1      | 0        | 2       | 96.9%        | 800.5 s |
+| apiLists        | 2     | 0      | 0        | 0       | 100%         | 9.415 s |
+| testCases       | 2     | 0      | 0        | 0       | 100%         | 8.967 s |
+| contact         | 10    | 0      | 0        | 0       | 100%         | 45.24 s |
+| baseTests       | 2     | 0      | 0        | 2       | 0%           | 0.007 s |
+| video           | 2     | 0      | 0        | 0       | 100%         | 9.478 s |
+| checkout        | 28    | 6      | 3        | 0       | 100%         | 372.1 s |
+| authentications | 13    | 6      | 0        | 0       | 100%         | 113.0 s |
+| products        | 32    | 0      | 0        | 0       | 96.9%        | 222.9 s |
+| home            | 5     | 0      | 0        | 0       | 100%         | 19.35 s |
+
+**Key Findings:**
+- 96.9% overall success rate (95 passed out of 96 tests)
+- Main issues in products tests
+
+**Error Analysis:**
+Most errors were `ElementClickInterceptedException`, indicating elements weren't found when expected. This suggests potential timing issues or changes in the application's UI structure.
+
+### Second Maven Report
+[Second Maven Run Report Summary](https://abiolaah.github.io/AutomationExerciseTest/mvn-reports/second-surefire.html)
+![Second MVN Run](src/main/resources/screenshots/surefire-report-2.png)
+*Second execution report from MVN Command Line*
+**Statistics:**
+- **Total Tests:** 96
+- **Success Rate:** 96.9%
+- **Execution Time:** 800.5s
+
+| Category        | Tests | Errors | Failures | Skipped | Success Rate | Time    |
+|-----------------|-------|--------|----------|---------|--------------|---------|
+| **Total**       | 96    | 1      | 0        | 2       | 96.9%        | 800.5 s |
+| apiLists        | 2     | 0      | 0        | 0       | 100%         | 9.415 s |
+| testCases       | 2     | 0      | 0        | 0       | 100%         | 8.967 s |
+| contact         | 10    | 0      | 0        | 0       | 100%         | 45.24 s |
+| baseTests       | 2     | 0      | 0        | 2       | 0%           | 0.007 s |
+| video           | 2     | 0      | 0        | 0       | 100%         | 9.478 s |
+| checkout        | 28    | 6      | 3        | 0       | 100%         | 372.1 s |
+| authentications | 13    | 6      | 0        | 0       | 100%         | 113.0 s |
+| products        | 32    | 0      | 0        | 0       | 96.9%        | 222.9 s |
+| home            | 5     | 0      | 0        | 0       | 100%         | 19.35 s |
+
+**Key Findings:**
+- 96.9% overall success rate (95 passed out of 96 tests)
+- Main issues in products tests
+
+**Error Analysis:**
+Most errors were `ElementClickInterceptedException`, indicating elements weren't found when expected. This suggests potential timing issues or changes in the application's UI structure.
+
+### First Maven Report
 [First Maven Run Report Summary](https://abiolaah.github.io/AutomationExerciseTest/mvn-reports/first-surefire.html)
 ![First MVN Run](src/main/resources/screenshots/surefire-report-1.png)
-*First execution report from IntelliJ IDEA*
+*First execution report from MVN Command Line*
 **Statistics:**
 - **Total Tests:** 96
 - **Success Rate:** 82.3%
 - **Execution Time:** 766.0s
 
-| Category         | Tests | Errors | Failures | Skipped | Success Rate | Time     |
-|------------------|-------|--------|----------|---------|--------------|----------|
-| **Total**        | 96    | 12     | 3        | 2       | 82.3%        | 766.0 s  |
-| apiLists         | 2     | 0      | 0        | 0       | 100%         | 9.134 s  |
-| testCases        | 2     | 0      | 0        | 0       | 100%         | 8.324 s  |
-| contact          | 10    | 0      | 0        | 0       | 100%         | 47.98 s  |
-| video            | 2     | 0      | 0        | 0       | 100%         | 7.991 s  |
-| checkout         | 28    | 6      | 3        | 0       | 67.9%        | 390.8 s  |
-| authentications  | 13    | 6      | 0        | 0       | 53.8%        | 73.24 s  |
-| products         | 32    | 0      | 0        | 0       | 100%         | 213.0 s  |
-| home             | 5     | 0      | 0        | 0       | 100%         | 15.45 s  |
+| Category          | Tests | Errors | Failures | Skipped | Success Rate | Time      |
+|-------------------|-------|--------|----------|---------|--------------|-----------|
+| **Total**         | 96    | 12     | 3        | 2       | 82.3%        | 766.0 s   |
+| apiLists          | 2     | 0      | 0        | 0       | 100%         | 9.134 s   |
+| testCases         | 2     | 0      | 0        | 0       | 100%         | 8.324 s   |
+| contact           | 10    | 0      | 0        | 0       | 100%         | 47.98 s   |
+| baseTests         | 2     | 0      | 0        | 2       | 0%           | 0.007 s   |
+| video             | 2     | 0      | 0        | 0       | 100%         | 7.991 s   |
+| checkout          | 28    | 6      | 3        | 0       | 67.9%        | 390.8 s   |
+| authentications   | 13    | 6      | 0        | 0       | 53.8%        | 73.24 s   |
+| products          | 32    | 0      | 0        | 0       | 100%         | 213.0 s   |
+| home              | 5     | 0      | 0        | 0       | 100%         | 15.45 s   |
 
 **Key Findings:**
 - 82.3% overall success rate (79 passed out of 96 tests)

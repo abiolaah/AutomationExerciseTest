@@ -132,10 +132,10 @@ public class VerifyContactTest extends BaseTest {
             contactPage.clickToAcceptAlert();
 
             // Click home button and wait for page to load
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             homePage = contactPage.clickHomeButton();
 
             // Add explicit wait for the home page to load
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             wait.until(ExpectedConditions.titleContains("Automation")); // Wait for title to contain "Automation"
 
             // Verify the page header

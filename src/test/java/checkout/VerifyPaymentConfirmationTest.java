@@ -3,6 +3,7 @@ package checkout;
 import baseTests.BaseTest;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.*;
+import org.openqa.selenium.StaleElementReferenceException;
 import pages.*;
 import utils.CartProduct;
 import utils.JsonUtils;
@@ -15,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Supplier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -502,10 +504,10 @@ public class VerifyPaymentConfirmationTest extends BaseTest {
         authPage.setLoginPasswordElement("AmyAndrew@1997");
 
         //Navigate to homepage from auth page
-        homePage = authPage.clickLogin();
+        homePage = retryOnStale(() -> authPage.clickLogin());
 
         //Navigate to cart page from homepage
-        cartPage = homePage.clickCartNavigationAfterLogin();
+        cartPage = retryOnStale(() -> homePage.clickCartNavigationAfterLogin());
 
         // Check if the cart is empty
         String emptyCartText = cartPage.getEmptyCartText();
@@ -577,5 +579,19 @@ public class VerifyPaymentConfirmationTest extends BaseTest {
         } catch (IOException e) {
             throw new RuntimeException("Failed to read the invoice file: " + e.getMessage(), e);
         }
+    }
+
+    private <T> T retryOnStale(Supplier<T> action) {
+        int attempts = 0;
+        while (attempts < 3) {
+            try {
+                return action.get();
+            } catch (StaleElementReferenceException e) {
+                attempts++;
+                if (attempts >= 3) throw e;
+                try { Thread.sleep(1000); } catch (InterruptedException ie) { Thread.currentThread().interrupt(); }
+            }
+        }
+        throw new RuntimeException("Failed after retries");
     }
 }
