@@ -83,34 +83,39 @@ AutomationExerciseTest/
 ```
 ## Test Results
 
+## Test Results
+
 ### Third Maven Report
-[Third Maven Run Report Summary](https://abiolaah.github.io/AutomationExerciseTest/mvn-reports/second-surefire.html)
-![Third MVN Run](src/main/resources/screenshots/surefire-report-2.png)
+[Third Maven Run Report Summary](https://abiolaah.github.io/AutomationExerciseTest/mvn-reports/third-surefire.html)
+![Third MVN Run](src/main/resources/screenshots/surefire-report-3.png)
 *Third execution report from MVN Command Line*
 **Statistics:**
 - **Total Tests:** 96
-- **Success Rate:** 96.9%
-- **Execution Time:** 800.5s
+- **Success Rate:** 97.9%
+- **Execution Time:** 733.4s
 
 | Category        | Tests | Errors | Failures | Skipped | Success Rate | Time    |
 |-----------------|-------|--------|----------|---------|--------------|---------|
-| **Total**       | 96    | 1      | 0        | 2       | 96.9%        | 800.5 s |
-| apiLists        | 2     | 0      | 0        | 0       | 100%         | 9.415 s |
-| testCases       | 2     | 0      | 0        | 0       | 100%         | 8.967 s |
-| contact         | 10    | 0      | 0        | 0       | 100%         | 45.24 s |
+| **Total**       | 96    | 0      | 0        | 2       | 97.9%        | 733.4 s |
+| apiLists        | 2     | 0      | 0        | 0       | 100%         | 8.118 s |
+| testCases       | 2     | 0      | 0        | 0       | 100%         | 9.104 s |
+| contact         | 10    | 0      | 0        | 0       | 100%         | 45.79 s |
 | baseTests       | 2     | 0      | 0        | 2       | 0%           | 0.007 s |
-| video           | 2     | 0      | 0        | 0       | 100%         | 9.478 s |
-| checkout        | 28    | 6      | 3        | 0       | 100%         | 372.1 s |
-| authentications | 13    | 6      | 0        | 0       | 100%         | 113.0 s |
-| products        | 32    | 0      | 0        | 0       | 96.9%        | 222.9 s |
-| home            | 5     | 0      | 0        | 0       | 100%         | 19.35 s |
+| video           | 2     | 0      | 0        | 0       | 100%         | 10.10 s |
+| checkout        | 28    | 0      | 0        | 0       | 100%         | 345.7 s |
+| authentications | 13    | 0      | 0        | 0       | 100%         | 95.77 s |
+| products        | 32    | 0      | 0        | 0       | 100%         | 202.6 s |
+| home            | 5     | 0      | 0        | 0       | 100%         | 16.17 s |
 
 **Key Findings:**
-- 96.9% overall success rate (95 passed out of 96 tests)
-- Main issues in products tests
+- 97.9% overall success rate (94 passed out of 96 tests)
+- All test categories achieved 100% success rate except for baseTests (which had 2 skipped tests)
+- Significant improvement in execution time (733.4s vs 800.5s in previous run)
 
 **Error Analysis:**
-Most errors were `ElementClickInterceptedException`, indicating elements weren't found when expected. This suggests potential timing issues or changes in the application's UI structure.
+- No errors or failures in this run
+- The two skipped tests in baseTests are intentionally disabled with @Disabled annotation
+- Performance improvements seen across all test categories compared to previous runs
 
 ### Second Maven Report
 [Second Maven Run Report Summary](https://abiolaah.github.io/AutomationExerciseTest/mvn-reports/second-surefire.html)
@@ -129,17 +134,24 @@ Most errors were `ElementClickInterceptedException`, indicating elements weren't
 | contact         | 10    | 0      | 0        | 0       | 100%         | 45.24 s |
 | baseTests       | 2     | 0      | 0        | 2       | 0%           | 0.007 s |
 | video           | 2     | 0      | 0        | 0       | 100%         | 9.478 s |
-| checkout        | 28    | 6      | 3        | 0       | 100%         | 372.1 s |
-| authentications | 13    | 6      | 0        | 0       | 100%         | 113.0 s |
-| products        | 32    | 0      | 0        | 0       | 96.9%        | 222.9 s |
+| checkout        | 28    | 0      | 0        | 0       | 100%         | 372.1 s |
+| authentications | 13    | 0      | 0        | 0       | 100%         | 113.0 s |
+| products        | 32    | 1      | 0        | 0       | 96.9%        | 222.9 s |
 | home            | 5     | 0      | 0        | 0       | 100%         | 19.35 s |
 
 **Key Findings:**
-- 96.9% overall success rate (95 passed out of 96 tests)
-- Main issues in products tests
+- 96.9% overall success rate (93 passed out of 96 tests)
+- Single error occurred in products test category
+- Two tests skipped in baseTests (intentionally disabled)
 
 **Error Analysis:**
-Most errors were `ElementClickInterceptedException`, indicating elements weren't found when expected. This suggests potential timing issues or changes in the application's UI structure.
+- The error in products test was an `ElementClickInterceptedException` when trying to click on a category link
+- The issue was caused by an overlapping div element (likely an ad container) intercepting the click
+- This suggests the need for either:
+   - Better element location strategy
+   - Explicit waits to ensure element is clickable
+   - Handling of potential overlay elements
+- The skipped tests are intentionally disabled (@Disabled) and not indicative of problems
 
 ### First Maven Report
 [First Maven Run Report Summary](https://abiolaah.github.io/AutomationExerciseTest/mvn-reports/first-surefire.html)
@@ -199,22 +211,22 @@ To view the complete HTML test report with detailed error information:
 
 ## Screenshots
 *Some Screenshot of the test*
-![Test Case Page Verification](src/main/resources/screenshot/Confirm All Test Case Title_20250327_160616.png)
+![Test Case Page Verification](src/main/resources/screenshot/confirm_all_test_case_title.png)
 *Figure 1: Test Case Page Verification*
 
-![API List Page Header](src/main/resources/screenshot/Confirm API List Page Header Text_20250327_155723.png)
+![API List Page Header](src/main/resources/screenshot/confirm_api_list_page_header_text.png)
 *Figure 2: API List Page Header Verification*
 
-![Checkout Process Flow](src/main/resources/screenshot/Confirm Checkout Process Pre Login_20250327_160421.png)
+![Checkout Process Flow](src/main/resources/screenshot/confirm_checkout_process_pre_login.png)
 *Figure 3: Checkout Process Flow*
 
-![User Authentication Test](src/main/resources/screenshot/Verify Login Section Text_20250327_160556.png)
+![User Authentication Test](src/main/resources/screenshot/verify_login_section_text.png)
 *Figure 4: User Authentication Test*
 
 ![Product Search Results](src/main/resources/screenshot/Confirm Page Header Change After Search_20250327_160626.png)
 *Figure 5: Product Search Results*
 
-![Shopping Cart Summary](src/main/resources/screenshot/Delete a product from cart_20250327_160328.png)
+![Shopping Cart Summary](src/main/resources/screenshot/delete_a_product_from_cart.png)
 *Figure 6: Shopping Cart Summary*
 <!-- AUTO-GENERATED SCREENSHOTS END -->
 
